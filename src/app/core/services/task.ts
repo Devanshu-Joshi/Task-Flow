@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { collection, getDocs, doc, addDoc, query, where, orderBy, onSnapshot, deleteDoc, getFirestore } from 'firebase/firestore';
+import { collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, getFirestore } from 'firebase/firestore';
 import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 
@@ -28,13 +28,11 @@ export class TaskService {
   loadTasks() {
     onAuthStateChanged(this.auth, (user) => {
 
-      // 🔄 Clean up previous snapshot listener
       if (this.unsubscribeSnapshot) {
         this.unsubscribeSnapshot();
         this.unsubscribeSnapshot = undefined;
       }
 
-      // 👤 User logged out
       if (!user) {
         console.log('User not authenticated, clearing tasks');
         this.tasks.set([]);
@@ -43,14 +41,12 @@ export class TaskService {
 
       console.log('Authenticated user:', user.uid);
 
-      // 🔍 Firestore query
       const q = query(
         collection(this.firestore, 'tasks'),
         where('userId', '==', user.uid),
         orderBy('createdAt', 'desc')
       );
 
-      // 👂 Real-time listener
       this.unsubscribeSnapshot = onSnapshot(
         q,
         (snapshot) => {

@@ -37,7 +37,6 @@ export class Dashboard {
 
     const formValue = this.taskForm.getRawValue();
 
-    // ✅ PRINT DATA
     console.log('Add Task form data:', formValue);
 
     await this.taskService.addTask(formValue);
