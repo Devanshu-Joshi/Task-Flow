@@ -1,1 +1,23 @@
-<p>login works!</p>
+<div class="flex h-full justify-center items-center">
+    <div class="loginCard border-2 border-gray-500 rounded-xl px-10 py-5">
+        <div class="w-full text-center pb-5">
+            <label for="email" class="form-label font-bold text-3xl">Login</label>
+        </div>
+        <form [formGroup]="loginForm" (ngSubmit)="submit()">
+            <div class="mb-3 flex gap-1">
+                <label for="email" class="form-label font-bold">Email address</label>
+                <input formControlName="email" type="email" class="form-control border-2 border-black px-1" id="email"
+                    aria-describedby="emailHelp" placeholder="john@gmail.com">
+            </div>
+            <div class="mb-3 flex gap-1 ">
+                <label for="password" class="form-label font-bold">Password</label>
+                <input formControlName="password" type="password" class="form-control border-2 border-black px-1"
+                    id="password">
+            </div>
+            <div class="btnContainer w-full flex justify-center">
+                <button type="submit"
+                    class="btn btn-primary font-bold border-2 border-black py-1 px-2 rounded-xl hover:bg-green-300 cursor-pointer">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -20,7 +20,6 @@ export class AuthService {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
       this.user.set(userCredential.user);
-      alert("Login Successful");
       return userCredential;
     } catch (error) {
       throw error;
