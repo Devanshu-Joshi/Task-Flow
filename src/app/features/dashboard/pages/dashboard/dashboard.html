@@ -1,10 +1,10 @@
 <div
     class="h-screen w-full bg-linear-to-r from-purple-600 via-fuchsia-600 to-indigo-600 flex items-center flex-col px-7">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-        <div class="mt-15 bg-white h-fit p-4 flex rounded-lg">
+        <div class="mt-15 bg-white h-fit p-4 flex rounded-lg justify-between">
             <div>
                 <div class="mb-1 text-[#64748b] font-semibold">Total tasks</div>
-                <div class="mb-1 font-bold text-[0f172a]">152</div>
+                <div class="mb-1 font-bold text-[0f172a]">{{totalTasks()}}</div>
                 <div class="mb-1 text-[#10b981] text-sm">Tasks created so far</div>
             </div>
             <div>
@@ -13,11 +13,11 @@
                 </div>
             </div>
         </div>
-        <div class="mt-15 bg-white h-fit p-4 flex rounded-lg">
+        <div class="mt-15 bg-white h-fit p-4 flex rounded-lg justify-between">
             <div>
-                <div class="mb-1 text-[#64748b] font-semibold">Orders</div>
-                <div class="mb-1 font-bold text-[0f172a]">152</div>
-                <div class="mb-1 text-[#10b981] text-sm">24 new since last visit</div>
+                <div class="mb-1 text-[#64748b] font-semibold">Completed Tasks</div>
+                <div class="mb-1 font-bold text-[0f172a]">{{completedTasks()}}</div>
+                <div class="mb-1 text-[#10b981] text-sm">Hooray!</div>
             </div>
             <div>
                 <div class="bg-[#dbeafe] px-1 py-1 flex justify-center rounded-lg">
@@ -25,15 +25,15 @@
                 </div>
             </div>
         </div>
-        <div class="mt-15 bg-white h-fit p-4 flex rounded-lg">
+        <div class="mt-15 bg-white h-fit p-4 flex rounded-lg justify-between">
             <div>
-                <div class="mb-1 text-[#64748b] font-semibold">Orders</div>
-                <div class="mb-1 font-bold text-[0f172a]">152</div>
-                <div class="mb-1 text-[#10b981] text-sm">24 new since last visit</div>
+                <div class="mb-1 text-[#64748b] font-semibold">Pending Tasks</div>
+                <div class="mb-1 font-bold text-[0f172a]">{{inProgressTasks()}}</div>
+                <div class="mb-1 text-[#10b981] text-sm">Hurry Up!</div>
             </div>
             <div>
-                <div class="bg-[#dbeafe] px-1 py-1 flex justify-center rounded-lg">
-                    <i class='bx bx-task text-3xl text-[#2b7fff]'></i>
+                <div class="bg-[#ff5a5a91] px-1 py-1 flex justify-center rounded-lg">
+                    <i class='bx bx-task text-3xl text-[#ff0000]'></i>
                 </div>
             </div>
         </div>
@@ -71,9 +71,15 @@
                     <td>{{ item.title }}</td>
                     <td>{{ item.status }}</td>
                     <td>{{ item.dueDate }}</td>
-                    <td class="flex gap-1">
-                        <button>Edit</button>
-                        <button>Delete</button>
+                    <td class="flex gap-1.5">
+                        <button class="flex text-yellow-600 items-center gap-0.5">
+                            <i class='bx  bx-edit'></i>
+                            <p class="text-yellow-600 cursor-pointer">Edit</p>
+                        </button>
+                        <button class="flex text-red-600 items-center gap-0.5" (click)="delete(item.id!)">
+                            <i class='bx  bx-trash'></i>
+                            <p class="text-red-600 cursor-pointer">Delete</p>
+                        </button>
                     </td>
                 </tr>
                 }

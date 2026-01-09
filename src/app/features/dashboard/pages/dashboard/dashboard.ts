@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { TaskService } from '../../../../core/services/task';
+import { Task, TaskService } from '../../../../core/services/task';
+import { computed } from '@angular/core';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
@@ -16,9 +17,21 @@ export class Dashboard {
   }
 
   fb = inject(FormBuilder);
+  tasks!: Signal<Task[]>;
 
-  constructor(public taskService: TaskService) { }
+  totalTasks = computed(() => this.tasks().length);
 
+  completedTasks = computed(
+    () => this.tasks().filter(task => task.status === 'Completed').length
+  );
+
+  inProgressTasks = computed(
+    () => this.tasks().filter(t => t.status === 'InProgress').length
+  );
+
+  constructor(public taskService: TaskService) {
+    this.tasks = this.taskService.tasks;
+  }
 
   taskForm = this.fb.nonNullable.group({
     title: ['', [
@@ -49,4 +62,19 @@ export class Dashboard {
 
     this.toggleDialog();
   }
+
+  async delete(taskId: string) {
+
+    if (!taskId) return;
+
+    try {
+      console.log('Deleting task with ID:', taskId);
+      await this.taskService.deleteTask(taskId);
+      this.toggleDialog();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+
+  }
+
 }

@@ -1,85 +1,100 @@
 import { Injectable, signal } from '@angular/core';
-import { collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, getFirestore } from 'firebase/firestore';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
-import { Firestore } from '@angular/fire/firestore';
+import {
+  collection,
+  addDoc,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  getDoc,
+  Firestore
+} from '@angular/fire/firestore';
+import { Unsubscribe } from 'firebase/auth';
+import { AuthService } from './auth';
 
 export interface Task {
   id?: string;
   title: string;
-  status: string;
+  status: 'Incomplete' | 'Completed' | 'InProgress';
   dueDate: string;
   createdAt: number;
   userId: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class TaskService {
 
-  constructor(private auth: Auth, private firestore: Firestore) {
-    this.loadTasks();
+  /** ✅ Reactive task state (single source of truth) */
+  readonly tasks = signal<Task[]>([]);
+
+  private unsubscribeTasks?: Unsubscribe;
+
+  constructor(
+    private firestore: Firestore,
+    private authService: AuthService
+  ) {
+    this.listenToAuth();
   }
 
-  tasks = signal<Task[]>([]);
+  /* ---------------------------------- */
+  /* 🔐 AUTH → TASKS CONNECTION */
+  /* ---------------------------------- */
 
-  private unsubscribeSnapshot?: () => void;
+  private listenToAuth() {
+    this.authService.user$.subscribe(user => {
 
-  loadTasks() {
-    onAuthStateChanged(this.auth, (user) => {
-
-      if (this.unsubscribeSnapshot) {
-        this.unsubscribeSnapshot();
-        this.unsubscribeSnapshot = undefined;
-      }
+      // Cleanup old listener
+      this.unsubscribeTasks?.();
+      this.unsubscribeTasks = undefined;
 
       if (!user) {
-        console.log('User not authenticated, clearing tasks');
         this.tasks.set([]);
         return;
       }
 
-      console.log('Authenticated user:', user.uid);
-
-      const q = query(
-        collection(this.firestore, 'tasks'),
-        where('userId', '==', user.uid),
-        orderBy('createdAt', 'desc')
-      );
-
-      this.unsubscribeSnapshot = onSnapshot(
-        q,
-        (snapshot) => {
-          console.log('Snapshot received');
-          console.log('From cache:', snapshot.metadata.fromCache);
-          console.log('Documents count:', snapshot.size);
-
-          const tasks = snapshot.docs.map((doc) => {
-            const data = doc.data();
-
-            return {
-              id: doc.id,
-              ...data,
-            } as Task;
-          });
-
-          console.log('Loaded tasks:', tasks);
-
-          this.tasks.set(tasks);
-        },
-        (error) => {
-          console.error('Firestore snapshot error:', error);
-        }
-      );
+      this.startTaskListener(user.uid);
     });
   }
+
+  /* ---------------------------------- */
+  /* 🔥 FIRESTORE REALTIME LISTENER */
+  /* ---------------------------------- */
+
+  private startTaskListener(uid: string) {
+    const q = query(
+      collection(this.firestore, 'tasks'),
+      where('userId', '==', uid),
+      orderBy('createdAt', 'desc')
+    );
+
+    this.unsubscribeTasks = onSnapshot(
+      q,
+      snapshot => {
+        const tasks = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }) as Task);
+
+        this.tasks.set(tasks);
+      },
+      error => {
+        console.error('Firestore task listener error:', error);
+      }
+    );
+  }
+
+  /* ---------------------------------- */
+  /* ➕ ADD TASK */
+  /* ---------------------------------- */
 
   async addTask(task: {
     title: string;
     dueDate: string;
-    status: 'Incomplete' | 'Completed' | 'InProgress';
+    status: Task['status'];
   }) {
-    const user = await this.auth.currentUser;
+    const user = this.authService.currentUser;
 
     if (!user) {
       throw new Error('User not authenticated');
@@ -93,9 +108,31 @@ export class TaskService {
       userId: user.uid
     };
 
-    console.log('UID:', user.uid);
-
     await addDoc(collection(this.firestore, 'tasks'), newTask);
   }
 
+  /* ---------------------------------- */
+  /* ❌ DELETE TASK */
+  /* ---------------------------------- */
+
+  async deleteTask(taskId: string) {
+    const user = this.authService.currentUser;
+
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+
+    const taskRef = doc(this.firestore, 'tasks', taskId);
+    const snap = await getDoc(taskRef);
+
+    if (!snap.exists()) {
+      throw new Error('Task not found');
+    }
+
+    if (snap.data()['userId'] !== user.uid) {
+      throw new Error('Unauthorized delete attempt');
+    }
+
+    await deleteDoc(taskRef);
+  }
 }
