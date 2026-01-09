@@ -48,13 +48,19 @@
                 <i class="bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"></i>
             </div>
 
-            <div>
+            <div class="flex gap-2">
                 <button class="cursor-pointer py-2 px-2 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600
                  text-white
                  shadow-md shadow-purple-500/30
                  hover:shadow-lg hover:shadow-purple-500/40
                  hover:scale-105
                  transition-all duration-200" (click)="toggleDialog()">Add task</button>
+                <button class="cursor-pointer py-2 px-2 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600
+                 text-white
+                 shadow-md shadow-purple-500/30
+                 hover:shadow-lg hover:shadow-purple-500/40
+                 hover:scale-105
+                 transition-all duration-200" (click)="getPosts()">Get Posts</button>
             </div>
         </div>
 

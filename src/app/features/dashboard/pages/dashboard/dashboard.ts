@@ -1,7 +1,9 @@
 import { Component, inject, Signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Task, TaskService } from '../../../../core/services/task';
+import { TaskService } from '../../../../core/services/task';
 import { computed } from '@angular/core';
+import { Task } from '../../../../core/models/Task';
+import { PostService } from '../../../../core/services/post';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
@@ -19,6 +21,10 @@ export class Dashboard {
   fb = inject(FormBuilder);
   tasks!: Signal<Task[]>;
 
+  constructor(public taskService: TaskService, private postService: PostService) {
+    this.tasks = this.taskService.tasks;
+  }
+
   totalTasks = computed(() => this.tasks().length);
 
   completedTasks = computed(
@@ -28,10 +34,6 @@ export class Dashboard {
   inProgressTasks = computed(
     () => this.tasks().filter(t => t.status === 'InProgress').length
   );
-
-  constructor(public taskService: TaskService) {
-    this.tasks = this.taskService.tasks;
-  }
 
   taskForm = this.fb.nonNullable.group({
     title: ['', [
@@ -75,6 +77,14 @@ export class Dashboard {
       console.error('Error deleting task:', error);
     }
 
+  }
+
+  getPosts() {
+    const data = this.postService.getPosts();
+    data.subscribe((data) => console.log(data));
+
+    const dataOfOnePost = this.postService.getPost(49);
+    dataOfOnePost.subscribe((dataOfOnePost) => console.log(dataOfOnePost));
   }
 
 }
