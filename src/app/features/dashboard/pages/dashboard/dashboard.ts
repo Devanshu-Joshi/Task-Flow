@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import dayjs from 'dayjs';
 import { FormsModule } from '@angular/forms';
+import { isEditing } from '../../../../core/services/task';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
@@ -34,6 +35,7 @@ export class Dashboard implements OnInit {
   tasks!: Signal<Task[]>;
   searchControl = new FormControl('');
   searchTerm = signal('');
+  editingTaskId: string | null = null;
 
   constructor(public taskService: TaskService,) {
     this.tasks = this.taskService.tasks;
@@ -136,9 +138,10 @@ export class Dashboard implements OnInit {
 
     const formValue = this.taskForm.getRawValue();
 
-    console.log('Add Task form data:', formValue);
-
-    await this.taskService.addTask(formValue);
+    await this.taskService.addTask({
+      ...formValue,
+      id: this.editingTaskId!
+    } as Task);
 
     this.taskForm.reset({
       title: '',
@@ -146,6 +149,8 @@ export class Dashboard implements OnInit {
       status: 'Incomplete'
     });
 
+    this.editingTaskId = null;
+    isEditing.set(false);
     this.toggleDialog();
   }
 
@@ -161,6 +166,17 @@ export class Dashboard implements OnInit {
       console.error('Error deleting task:', error);
     }
 
+  }
+
+  edit(task: Task) {
+    isEditing.set(true);
+    this.editingTaskId = task.id!;
+    this.taskForm.patchValue({
+      title: task.title,
+      dueDate: task.dueDate,
+      status: task.status
+    });
+    this.toggleDialog();
   }
 
 }
