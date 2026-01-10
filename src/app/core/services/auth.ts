@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, Auth, User } from "@angular/fire/auth";
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -15,7 +16,7 @@ export class AuthService {
   private authReadySubject = new BehaviorSubject<boolean>(false);
   authReady$ = this.authReadySubject.asObservable();
 
-  constructor(private auth: Auth, private router: Router) {
+  constructor(private auth: Auth, private router: Router, private toastr: ToastrService) {
     onAuthStateChanged(this.auth, (user) => {
       this.userSubject.next(user);
       this.authReadySubject.next(true);
@@ -58,6 +59,7 @@ export class AuthService {
       this.user.set(null);
       this.isLoggedIn.set(false);
       this.router.navigate(['/login']);
+      this.toastr.success('Logout successful', 'Success');
     } catch (error) {
       throw error;
     }

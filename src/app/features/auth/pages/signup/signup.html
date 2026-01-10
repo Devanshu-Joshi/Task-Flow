@@ -1,61 +1,150 @@
 <div class="min-h-screen flex items-center justify-center
          bg-linear-to-br from-purple-600 via-indigo-600 to-fuchsia-600">
 
-    <div class="w-full max-w-md p-8 rounded-2xl
+    <div class="flex items-start gap-10">
+
+        <div class="w-full max-w-md p-8 rounded-2xl
            bg-white/20 backdrop-blur-xl
            border border-white/30 shadow-2xl">
 
-        <h2 class="text-3xl font-extrabold text-white tracking-tight text-center mb-2">
-            Welcome!
-        </h2>
+            <h2 class="text-3xl font-extrabold text-white tracking-tight text-center mb-2">
+                Welcome!
+            </h2>
 
-        <p class="text-center text-white tracking-tight mb-8">Sign up for your new Account!</p>
+            <p class="text-center text-white tracking-tight mb-8">Sign up for your new Account!</p>
 
-        <form [formGroup]="signupForm" (ngSubmit)="submit()" class="space-y-5">
+            <form [formGroup]="signupForm" (ngSubmit)="submit()" class="space-y-5">
 
-            <div>
-                <label class="block text-sm font-semibold text-purple-100 mb-1">
-                    Email Address
-                </label>
-                <input type="email" formControlName="email" placeholder="john@gmail.com" class="w-full px-4 py-2 rounded-lg
+                <div>
+                    <label class="block text-sm font-semibold text-purple-100 mb-1">
+                        Email Address
+                    </label>
+                    <input type="email" formControlName="email" placeholder="john@gmail.com" class="w-full px-4 py-2 rounded-lg
                  bg-white/30 text-white placeholder-purple-200
                  border border-white/40
                  focus:outline-none focus:ring-2 focus:ring-purple-300" />
-            </div>
+                </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-purple-100 mb-1">
-                    Password
-                </label>
-                <input type="password" formControlName="password" class="w-full px-4 py-2 rounded-lg
+                <div>
+                    <label class="block text-sm font-semibold text-purple-100 mb-1">
+                        Password
+                    </label>
+                    <input type="password" formControlName="password" class="w-full px-4 py-2 rounded-lg
                  bg-white/30 text-white
                  border border-white/40
                  focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-purple-200"
-                    placeholder="john@123" />
-            </div>
+                        placeholder="john@123" />
+                </div>
 
-            <div>
-                <label class="block text-sm font-semibold text-purple-100 mb-1">
-                    Confirm Password
-                </label>
-                <input type="password" formControlName="cpassword" class="w-full px-4 py-2 rounded-lg
+                <div>
+                    <label class="block text-sm font-semibold text-purple-100 mb-1">
+                        Confirm Password
+                    </label>
+                    <input type="password" formControlName="cpassword" class="w-full px-4 py-2 rounded-lg
                  bg-white/30 text-white
                  border border-white/40
                  focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-purple-200"
-                    placeholder="john@123" />
-            </div>
+                        placeholder="john@123" />
+                </div>
 
-            <p class="text-white">Already a user? <a class="text-white font-bold cursor-pointer"
-                    routerLink="/login">Login</a>
-            </p>
+                <p class="text-white">Already a user? <a class="text-white font-bold cursor-pointer"
+                        routerLink="/login">Login</a>
+                </p>
 
-            <button type="submit" class="w-full py-2 rounded-lg
+                <button type="submit" class="w-full py-2 rounded-lg
                bg-white hover:bg-white/80
                text-black font-bold
                transition-all duration-200 cursor-pointer">
-                Signup
-            </button>
+                    Signup
+                </button>
 
-        </form>
+            </form>
+        </div>
+
+        <!-- Password Requirement Card -->
+        <div class="w-115 p-6 rounded-2xl
+     bg-white/20 backdrop-blur-xl
+     border border-white/30 shadow-2xl">
+
+            <h2 class="mb-5 text-2xl font-extrabold text-white tracking-tight">
+                Password Requirements
+            </h2>
+
+            <ul class="space-y-4 text-sm">
+
+                <!-- At least 8 characters -->
+                <li class="flex items-center gap-3"
+                    [ngClass]="hasMinLength ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                        [ngClass]="hasMinLength ? 'border-emerald-300' : 'border-white/40'">
+                        @if (hasMinLength) {
+                        <span>✓</span>
+                        }
+                    </span>
+
+                    <span>At least 8 characters long</span>
+                </li>
+
+                <!-- Lowercase -->
+                <li class="flex items-center gap-3"
+                    [ngClass]="hasLowercase ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                        [ngClass]="hasLowercase ? 'border-emerald-300' : 'border-white/40'">
+                        @if (hasLowercase) {
+                        <span>✓</span>
+                        }
+                    </span>
+
+                    <span>Contains one lowercase letter</span>
+                </li>
+
+                <!-- Uppercase -->
+                <li class="flex items-center gap-3"
+                    [ngClass]="hasUppercase ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                        [ngClass]="hasUppercase ? 'border-emerald-300' : 'border-white/40'">
+                        @if (hasUppercase) {
+                        <span>✓</span>
+                        }
+                    </span>
+
+                    <span>Contains one uppercase letter</span>
+                </li>
+
+                <!-- Number -->
+                <li class="flex items-center gap-3"
+                    [ngClass]="hasNumber ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                        [ngClass]="hasNumber ? 'border-emerald-300' : 'border-white/40'">
+                        @if (hasNumber) {
+                        <span>✓</span>
+                        }
+                    </span>
+
+                    <span>Contains one numerical digit</span>
+                </li>
+
+                <!-- Special character -->
+                <li class="flex items-center gap-3"
+                    [ngClass]="hasSpecialChar ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                        [ngClass]="hasSpecialChar ? 'border-emerald-300' : 'border-white/40'">
+                        @if (hasSpecialChar) {
+                        <span>✓</span>
+                        }
+                    </span>
+
+                    <span>Contains one special character</span>
+                </li>
+
+            </ul>
+        </div>
+
+        <!-- OR paste your card wrapper HTML directly here -->
     </div>
 </div>

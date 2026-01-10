@@ -1,15 +1,18 @@
 <div class="min-h-screen flex items-center justify-center
          bg-linear-to-br from-purple-600 via-indigo-600 to-fuchsia-600">
 
+    <!-- Login Card -->
     <div class="w-full max-w-md p-8 rounded-2xl
-           bg-white/20 backdrop-blur-xl
-           border border-white/30 shadow-2xl">
+         bg-white/20 backdrop-blur-xl
+         border border-white/30 shadow-2xl">
 
         <h2 class="text-3xl font-extrabold text-white tracking-tight text-center mb-2">
             Welcome Back
         </h2>
 
-        <p class="text-center text-white tracking-tight mb-8">Sign in to continue to your dashboard!</p>
+        <p class="text-center text-white tracking-tight mb-8">
+            Sign in to continue to your dashboard!
+        </p>
 
         <form [formGroup]="loginForm" (ngSubmit)="submit()" class="space-y-5">
 
@@ -18,33 +21,34 @@
                     Email Address
                 </label>
                 <input type="email" formControlName="email" placeholder="john@gmail.com" class="w-full px-4 py-2 rounded-lg
-                 bg-white/30 text-white placeholder-purple-200
-                 border border-white/40
-                 focus:outline-none focus:ring-2 focus:ring-purple-300" />
+                   bg-white/30 text-white placeholder-purple-200
+                   border border-white/40
+                   focus:outline-none focus:ring-2 focus:ring-purple-300" />
             </div>
 
             <div>
                 <label class="block text-sm font-semibold text-purple-100 mb-1">
                     Password
                 </label>
-                <input type="password" formControlName="password" class="w-full px-4 py-2 rounded-lg
-                 bg-white/30 text-white
-                 border border-white/40
-                 focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-purple-200"
-                    placeholder="john@123" />
+                <input type="password" formControlName="password" placeholder="john@123" class="w-full px-4 py-2 rounded-lg
+                   bg-white/30 text-white placeholder-purple-200
+                   border border-white/40
+                   focus:outline-none focus:ring-2 focus:ring-purple-300" />
             </div>
 
-            <p class="text-white">Don't have any account? <a class="text-white font-bold" routerLink="/signup">Create
-                    One</a>
+            <p class="text-white">
+                Don't have any account?
+                <a class="text-white font-bold" routerLink="/signup">Create One</a>
             </p>
 
             <button type="submit" class="w-full py-2 rounded-lg
-               bg-white hover:bg-white/80
-               text-black font-bold
-               transition-all duration-200 cursor-pointer">
+                 bg-white hover:bg-white/80
+                 text-black font-bold
+                 transition-all duration-200 cursor-pointer">
                 Login
             </button>
 
         </form>
     </div>
+
 </div>
