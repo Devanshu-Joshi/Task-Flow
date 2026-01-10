@@ -10,6 +10,8 @@ import { environment } from '../../environments/environment';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
+import { importProvidersFrom } from "@angular/core";
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,6 +23,19 @@ export const appConfig: ApplicationConfig = {
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideAnimations(),
-    provideToastr()
+    provideToastr({
+      maxOpened: 3,
+      timeOut: 3000,
+      closeButton: true,
+      progressBar: true,
+      newestOnTop: true,
+      preventDuplicates: true
+    }),
+    importProvidersFrom([
+      NgxDaterangepickerMd.forRoot({
+        separator: ' - ',
+        applyLabel: 'Apply',
+      }),
+    ]),
   ]
 };
