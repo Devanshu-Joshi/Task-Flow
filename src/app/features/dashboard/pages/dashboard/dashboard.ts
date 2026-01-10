@@ -3,13 +3,13 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angu
 import { TaskService } from '../../../../core/services/task';
 import { signal, computed } from '@angular/core';
 import { Task } from '../../../../core/models/Task';
-import { PostService } from '../../../../core/services/post';
 import { debounceTime } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -20,24 +20,31 @@ export class Dashboard implements OnInit {
   }
 
   fb = inject(FormBuilder);
+  showStatusDropdown = false;
+  dropdownPosition = {
+    top: 0,
+    left: 0
+  };
+  selectedStatus = signal<string>(''); // '' means All
   tasks!: Signal<Task[]>;
   searchControl = new FormControl('');
   searchTerm = signal('');
   filteredTasks = computed(() => {
     const term = this.searchTerm().toLowerCase();
+    const status = this.selectedStatus();
 
-    if (!term) {
-      return this.tasks();
-    }
+    return this.tasks().filter(task => {
+      const matchesSearch = !term
+        || task.title.toLowerCase().includes(term);
 
-    return this.tasks().filter(task =>
-      // task.title.toLowerCase().includes(term) ||
-      // task.status.toLowerCase().includes(term)
-      task.title.toLowerCase().includes(term)
-    );
+      const matchesStatus = !status
+        || task.status === status;
+
+      return matchesSearch && matchesStatus;
+    });
   });
 
-  constructor(public taskService: TaskService, private postService: PostService) {
+  constructor(public taskService: TaskService,) {
     this.tasks = this.taskService.tasks;
   }
 
@@ -59,6 +66,10 @@ export class Dashboard implements OnInit {
     () => this.tasks().filter(t => t.status === 'InProgress').length
   );
 
+  incompleteTasks = computed(
+    () => this.tasks().filter(t => t.status === 'Incomplete').length
+  );
+
   taskForm = this.fb.nonNullable.group({
     title: ['', [
       Validators.required,
@@ -68,6 +79,28 @@ export class Dashboard implements OnInit {
     status: ['Incomplete' as TaskStatus, Validators.required]
   });
 
+  toggleStatusDropdown() {
+    this.showStatusDropdown = !this.showStatusDropdown;
+  }
+
+  openStatusDropdown(event: MouseEvent) {
+    const button = (event.target as HTMLElement).closest('button');
+    if (!button) return;
+
+    const rect = button.getBoundingClientRect();
+
+    this.dropdownPosition = {
+      top: rect.bottom + 6,
+      left: rect.left
+    };
+
+    this.showStatusDropdown = true;
+  }
+
+  selectStatus(status: string) {
+    this.selectedStatus.set(status);
+    this.showStatusDropdown = false;
+  }
 
   async submit() {
     if (this.taskForm.invalid) {
@@ -102,14 +135,6 @@ export class Dashboard implements OnInit {
       console.error('Error deleting task:', error);
     }
 
-  }
-
-  getPosts() {
-    const data = this.postService.getPosts();
-    data.subscribe((data) => console.log(data));
-
-    const dataOfOnePost = this.postService.getPost(49);
-    dataOfOnePost.subscribe((dataOfOnePost) => console.log(dataOfOnePost));
   }
 
 }
