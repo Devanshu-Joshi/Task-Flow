@@ -15,6 +15,11 @@ import { CommonModule } from '@angular/common';
 export class Login {
 
   loginForm;
+  showPassword = false;
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastr: ToastrService) {
     this.loginForm = this.fb.group({
@@ -36,7 +41,8 @@ export class Login {
   async submit() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
-      this.showValidationToast();
+      // this.showValidationToast();
+      this.shakeFirstInvalidControl();
       return;
     }
 
@@ -52,22 +58,43 @@ export class Login {
     }
   }
 
-  private showValidationToast(): void {
-    for (const controlName of Object.keys(this.loginForm.controls)) {
-      const control = this.loginForm.get(controlName);
+  shakeFirstInvalidControl() {
+    const firstInvalidControl: HTMLElement | null =
+      document.querySelector('form .ng-invalid');
 
-      if (control && control.invalid && control.errors) {
-        const firstErrorKey = Object.keys(control.errors)[0];
+    if (!firstInvalidControl) return;
 
-        const message =
-          this.validationMessages[controlName]?.[firstErrorKey] ??
-          'Invalid input';
+    firstInvalidControl.classList.add('shake');
 
-        this.toastr.error(message, 'Validation Error');
+    setTimeout(() => {
+      firstInvalidControl.classList.remove('shake');
+    }, 400);
+  }
 
-        break;
-      }
-    }
+  get email() {
+    return this.loginForm.get('email');
+  }
+
+  get password() {
+    return this.loginForm.get('password');
   }
 
 }
+
+//   private showValidationToast(): void {
+//   for(const controlName of Object.keys(this.loginForm.controls)) {
+//   const control = this.loginForm.get(controlName);
+
+//   if (control && control.invalid && control.errors) {
+//     const firstErrorKey = Object.keys(control.errors)[0];
+
+//     const message =
+//       this.validationMessages[controlName]?.[firstErrorKey] ??
+//       'Invalid input';
+
+//     this.toastr.error(message, 'Validation Error');
+
+//     break;
+//   }
+// }
+//   }

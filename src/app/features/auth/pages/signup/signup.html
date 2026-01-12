@@ -1,7 +1,7 @@
 <div class="min-h-screen flex items-center justify-center
-         bg-linear-to-br from-purple-600 via-indigo-600 to-fuchsia-600">
+         bg-linear-to-br from-purple-600 via-indigo-600 to-fuchsia-600 py-10">
 
-    <div class="flex items-start gap-10">
+    <div class="flex items-start gap-10 w-110">
 
         <div class="w-full max-w-md p-8 rounded-2xl
            bg-white/20 backdrop-blur-xl
@@ -22,29 +22,147 @@
                     <input type="email" formControlName="email" placeholder="john@gmail.com" class="w-full px-4 py-2 rounded-lg
                  bg-white/30 text-white placeholder-purple-200
                  border border-white/40
-                 focus:outline-none focus:ring-2 focus:ring-purple-300" />
+                 focus:outline-none focus:ring-2 focus:ring-purple-300" [ngClass]="{
+                    'border-2! border-red-500! focus:ring-transparent!': email?.invalid && email?.touched
+                 }" />
+                    @if(email?.touched && email?.errors?.['required']){
+                    <ul class="list-disc pl-5 text-yellow-400">
+                        <li>Kindly enter your email address to continue.</li>
+                    </ul>
+                    }
+                    @else if(email?.invalid && email?.touched){
+                    <ul class="list-disc pl-5 text-yellow-400">
+                        <li>Kindly enter a valid email address to continue.</li>
+                    </ul>
+                    }
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-purple-100 mb-1">
                         Password
                     </label>
-                    <input type="password" formControlName="password" class="w-full px-4 py-2 rounded-lg
-                 bg-white/30 text-white
-                 border border-white/40
-                 focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-purple-200"
-                        placeholder="john@123" />
+
+                    <div class="relative w-full flex items-center">
+                        <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                            class="w-full px-4 py-2 pr-12 rounded-lg bg-white/30 text-white border border-white/40 focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-purple-200"
+                            placeholder="john@123"
+                            [ngClass]="{ 'border-2! border-red-500! focus:ring-transparent!': password?.invalid && password?.touched }" />
+
+                        <button type="button"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white flex items-center cursor-pointer"
+                            (click)="togglePassword()">
+                            <i class="bx" [ngClass]="showPassword ? 'bx-eye-closed' : 'bx-eye'"></i>
+                        </button>
+                    </div>
+
+                    @if(password?.touched && password?.errors?.['required']){
+                    <ul class="list-disc pl-5 text-yellow-400">
+                        <li>Kindly enter a password to continue.</li>
+                    </ul>
+                    }
+                    @else if(password?.invalid && password?.touched){
+                    <ul class="list-disc pl-5 text-yellow-400 flex flex-col gap-2">
+                        <li>Please enter a password which contains :</li>
+                        <ul class="space-y-4 text-sm">
+
+                            <li class="flex items-center gap-3"
+                                [ngClass]="hasMinLength ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                                <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                                    [ngClass]="hasMinLength ? 'border-emerald-300' : 'border-white/40'">
+                                    @if (hasMinLength) {
+                                    <span>✓</span>
+                                    }
+                                </span>
+
+                                <span>At least 8 characters</span>
+                            </li>
+
+                            <li class="flex items-center gap-3"
+                                [ngClass]="hasLowercase ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                                <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                                    [ngClass]="hasLowercase ? 'border-emerald-300' : 'border-white/40'">
+                                    @if (hasLowercase) {
+                                    <span>✓</span>
+                                    }
+                                </span>
+
+                                <span>At least one lowercase letter</span>
+                            </li>
+
+                            <li class="flex items-center gap-3"
+                                [ngClass]="hasUppercase ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                                <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                                    [ngClass]="hasUppercase ? 'border-emerald-300' : 'border-white/40'">
+                                    @if (hasUppercase) {
+                                    <span>✓</span>
+                                    }
+                                </span>
+
+                                <span>At least one uppercase letter</span>
+                            </li>
+
+                            <li class="flex items-center gap-3"
+                                [ngClass]="hasNumber ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                                <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                                    [ngClass]="hasNumber ? 'border-emerald-300' : 'border-white/40'">
+                                    @if (hasNumber) {
+                                    <span>✓</span>
+                                    }
+                                </span>
+
+                                <span>At least one numerical digit</span>
+                            </li>
+
+                            <li class="flex items-center gap-3"
+                                [ngClass]="hasSpecialChar ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
+
+                                <span class="flex h-5 w-5 items-center justify-center rounded-full border"
+                                    [ngClass]="hasSpecialChar ? 'border-emerald-300' : 'border-white/40'">
+                                    @if (hasSpecialChar) {
+                                    <span>✓</span>
+                                    }
+                                </span>
+
+                                <span>At least one special character</span>
+                            </li>
+
+                        </ul>
+                    </ul>
+                    }
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-purple-100 mb-1">
                         Confirm Password
                     </label>
-                    <input type="password" formControlName="cpassword" class="w-full px-4 py-2 rounded-lg
-                 bg-white/30 text-white
-                 border border-white/40
-                 focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-purple-200"
-                        placeholder="john@123" />
+                    <div class="relative w-full flex items-center">
+                        <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="cpassword"
+                            class="w-full px-4 py-2 pr-12 rounded-lg bg-white/30 text-white border border-white/40 focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder-purple-200"
+                            placeholder="john@123"
+                            [ngClass]="{ 'border-2! border-red-500! focus:ring-transparent!': cpassword?.invalid && cpassword?.touched }" />
+
+                        <button type="button"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white flex items-center cursor-pointer"
+                            (click)="toggleConfirmPassword()">
+                            <i class="bx" [ngClass]="showConfirmPassword ? 'bx-eye-closed' : 'bx-eye'"></i>
+                        </button>
+                    </div>
+
+
+                    @if (cpassword?.touched && cpassword?.errors?.['required']) {
+                    <ul class="list-disc pl-5 text-yellow-400">
+                        <li>Kindly confirm your password to continue.</li>
+                    </ul>
+                    }
+                    @else if (cpassword?.hasError('passwordMismatch') && cpassword?.touched) {
+                    <ul class="list-disc pl-5 text-yellow-400">
+                        <li>Passwords do not match.</li>
+                    </ul>
+                    }
                 </div>
 
                 <p class="text-white">Already a user? <a class="text-white font-bold cursor-pointer"
@@ -59,84 +177,6 @@
                 </button>
 
             </form>
-        </div>
-
-        <div class="w-115 p-6 rounded-2xl
-     bg-white/20 backdrop-blur-xl
-     border border-white/30 shadow-2xl">
-
-            <h2 class="mb-5 text-2xl font-extrabold text-white tracking-tight">
-                Password Requirements
-            </h2>
-
-            <ul class="space-y-4 text-sm">
-
-                <li class="flex items-center gap-3"
-                    [ngClass]="hasMinLength ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
-
-                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
-                        [ngClass]="hasMinLength ? 'border-emerald-300' : 'border-white/40'">
-                        @if (hasMinLength) {
-                        <span>✓</span>
-                        }
-                    </span>
-
-                    <span>At least 8 characters long</span>
-                </li>
-
-                <li class="flex items-center gap-3"
-                    [ngClass]="hasLowercase ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
-
-                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
-                        [ngClass]="hasLowercase ? 'border-emerald-300' : 'border-white/40'">
-                        @if (hasLowercase) {
-                        <span>✓</span>
-                        }
-                    </span>
-
-                    <span>Contains one lowercase letter</span>
-                </li>
-
-                <li class="flex items-center gap-3"
-                    [ngClass]="hasUppercase ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
-
-                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
-                        [ngClass]="hasUppercase ? 'border-emerald-300' : 'border-white/40'">
-                        @if (hasUppercase) {
-                        <span>✓</span>
-                        }
-                    </span>
-
-                    <span>Contains one uppercase letter</span>
-                </li>
-
-                <li class="flex items-center gap-3"
-                    [ngClass]="hasNumber ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
-
-                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
-                        [ngClass]="hasNumber ? 'border-emerald-300' : 'border-white/40'">
-                        @if (hasNumber) {
-                        <span>✓</span>
-                        }
-                    </span>
-
-                    <span>Contains one numerical digit</span>
-                </li>
-
-                <li class="flex items-center gap-3"
-                    [ngClass]="hasSpecialChar ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
-
-                    <span class="flex h-5 w-5 items-center justify-center rounded-full border"
-                        [ngClass]="hasSpecialChar ? 'border-emerald-300' : 'border-white/40'">
-                        @if (hasSpecialChar) {
-                        <span>✓</span>
-                        }
-                    </span>
-
-                    <span>Contains one special character</span>
-                </li>
-
-            </ul>
         </div>
 
     </div>

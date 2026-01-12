@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { passwordStrengthValidator } from '../../../../core/functions/passwordStrengthValidator';
 import { CommonModule } from '@angular/common';
+import { confirmPasswordValidator } from '../../../../core/functions/confirmPasswordValidator';
 
 @Component({
   selector: 'app-signup',
@@ -22,13 +23,26 @@ export class Signup {
   hasUppercase = false;
   hasNumber = false;
   hasSpecialChar = false;
+  showPassword = false;
+  showConfirmPassword = false;
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPassword() {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastr: ToastrService) {
     this.signupForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator]],
       cpassword: ['', [Validators.required]]
-    });
+    },
+      {
+        validators: confirmPasswordValidator('password', 'cpassword')
+      });
     this.listenToPasswordChanges();
   }
 
@@ -67,16 +81,12 @@ export class Signup {
   async submit() {
     if (this.signupForm.invalid) {
       this.signupForm.markAllAsTouched();
-      this.showValidationToast();
+      // this.showValidationToast();
+      this.shakeFirstInvalidControl();
       return;
     }
 
     const { email, password, cpassword } = this.signupForm.value;
-
-    if (password !== cpassword) {
-      this.toastr.error('Passwords do not match', 'Validation Error');
-      return;
-    }
 
     try {
       await this.authService.register(email!, password!);
@@ -88,22 +98,48 @@ export class Signup {
     }
   }
 
-  private showValidationToast(): void {
-    for (const controlName of Object.keys(this.signupForm.controls)) {
-      const control = this.signupForm.get(controlName);
+  shakeFirstInvalidControl() {
+    const firstInvalidControl: HTMLElement | null =
+      document.querySelector('form .ng-invalid');
 
-      if (control && control.invalid && control.errors) {
-        const firstErrorKey = Object.keys(control.errors)[0];
+    if (!firstInvalidControl) return;
 
-        const message =
-          this.validationMessages[controlName]?.[firstErrorKey] ??
-          'Invalid input';
+    firstInvalidControl.classList.add('shake');
 
-        this.toastr.error(message, 'Validation Error');
+    setTimeout(() => {
+      firstInvalidControl.classList.remove('shake');
+    }, 400);
+  }
 
-        break;
-      }
-    }
+
+  get email() {
+    return this.signupForm.get('email');
+  }
+
+  get password() {
+    return this.signupForm.get('password');
+  }
+
+  get cpassword() {
+    return this.signupForm.get('cpassword');
   }
 
 }
+
+// private showValidationToast(): void {
+//   for (const controlName of Object.keys(this.signupForm.controls)) {
+//     const control = this.signupForm.get(controlName);
+
+//     if (control && control.invalid && control.errors) {
+//       const firstErrorKey = Object.keys(control.errors)[0];
+
+//       const message =
+//         this.validationMessages[controlName]?.[firstErrorKey] ??
+//         'Invalid input';
+
+//       this.toastr.error(message, 'Validation Error');
+
+//       break;
+//     }
+//   }
+// }
