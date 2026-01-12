@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import dayjs from 'dayjs';
 import { FormsModule } from '@angular/forms';
-import { isEditing } from '../../../../core/services/task';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
@@ -21,6 +20,9 @@ export class Dashboard implements OnInit {
   isDialogClosed: boolean = true;
   toggleDialog() {
     this.isDialogClosed = !this.isDialogClosed;
+    if (this.isDialogClosed) {
+      this.resetForm();
+    }
   }
 
   fb = inject(FormBuilder);
@@ -36,6 +38,8 @@ export class Dashboard implements OnInit {
   searchControl = new FormControl('');
   searchTerm = signal('');
   editingTaskId: string | null = null;
+  dialogTitle = signal('Add');
+  isEditing = signal<boolean>(false);
 
   constructor(public taskService: TaskService,) {
     this.tasks = this.taskService.tasks;
@@ -131,26 +135,20 @@ export class Dashboard implements OnInit {
   }
 
   async submit() {
-    if (this.taskForm.invalid) {
-      this.taskForm.markAllAsTouched();
-      return;
+    if (this.taskForm.invalid) return;
+
+    const value = this.taskForm.getRawValue();
+
+    if (this.editingTaskId) {
+      await this.taskService.updateTask({
+        ...value,
+        id: this.editingTaskId
+      } as Task);
+    } else {
+      await this.taskService.addTask(value as Task);
     }
 
-    const formValue = this.taskForm.getRawValue();
-
-    await this.taskService.addTask({
-      ...formValue,
-      id: this.editingTaskId!
-    } as Task);
-
-    this.taskForm.reset({
-      title: '',
-      dueDate: '',
-      status: 'Incomplete'
-    });
-
-    this.editingTaskId = null;
-    isEditing.set(false);
+    this.resetForm();
     this.toggleDialog();
   }
 
@@ -169,7 +167,8 @@ export class Dashboard implements OnInit {
   }
 
   edit(task: Task) {
-    isEditing.set(true);
+    this.dialogTitle.set('Edit');
+    this.isEditing.set(true);
     this.editingTaskId = task.id!;
     this.taskForm.patchValue({
       title: task.title,
@@ -177,6 +176,18 @@ export class Dashboard implements OnInit {
       status: task.status
     });
     this.toggleDialog();
+  }
+
+  resetForm() {
+    this.taskForm.reset({
+      title: '',
+      dueDate: '',
+      status: 'Incomplete'
+    });
+
+    this.editingTaskId = null;
+    this.isEditing.set(false);
+    this.dialogTitle.set('Add');
   }
 
 }

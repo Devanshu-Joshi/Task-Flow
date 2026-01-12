@@ -15,7 +15,7 @@ import {
 import { Unsubscribe } from 'firebase/auth';
 import { AuthService } from './auth';
 import { Task } from '../models/Task';
-export let isEditing = signal<boolean>(false);
+// export let isEditing = signal<boolean>(false);
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
@@ -73,30 +73,31 @@ export class TaskService {
     const user = this.authService.currentUser;
     if (!user) throw new Error('User not authenticated');
 
-    if (isEditing()) {
-      const taskRef = doc(this.firestore, 'tasks', task.id!);
-      const snap = await getDoc(taskRef);
-
-      if (!snap.exists()) throw new Error('Task not found');
-      if (snap.data()['userId'] !== user.uid)
-        throw new Error('Unauthorized edit attempt');
-
-      await updateDoc(taskRef, {
-        title: task.title.trim(),
-        dueDate: task.dueDate,
-        status: task.status
-      });
-
-      isEditing.set(false);
-      return;
-    }
-
     await addDoc(collection(this.firestore, 'tasks'), {
       title: task.title.trim(),
       dueDate: task.dueDate,
       status: task.status,
       createdAt: Date.now(),
       userId: user.uid
+    });
+  }
+
+  async updateTask(task: Task) {
+    const user = this.authService.currentUser;
+    if (!user) throw new Error('User not authenticated');
+    if (!task.id) throw new Error('Task ID is required');
+
+    const taskRef = doc(this.firestore, 'tasks', task.id);
+    const snap = await getDoc(taskRef);
+
+    if (!snap.exists()) throw new Error('Task not found');
+    if (snap.data()['userId'] !== user.uid)
+      throw new Error('Unauthorized edit attempt');
+
+    await updateDoc(taskRef, {
+      title: task.title.trim(),
+      dueDate: task.dueDate,
+      status: task.status
     });
   }
 
