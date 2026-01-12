@@ -20,6 +20,7 @@ export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 export class Dashboard implements OnInit {
   isDialogClosed: boolean = true;
   toggleDialog() {
+    console.log(this.isDeleting());
     this.isDialogClosed = !this.isDialogClosed;
     if (this.isDialogClosed) {
       this.resetForm();
@@ -255,6 +256,7 @@ export class Dashboard implements OnInit {
 
     this.editingTaskId = null;
     this.isEditing.set(false);
+    this.isDeleting.set(false);
     this.dialogTitle.set('Add');
     this.dialogDescription.set('Add task details below');
     this.dialogTitleColor.set('text-primary');
