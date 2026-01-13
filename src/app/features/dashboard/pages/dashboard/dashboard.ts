@@ -56,6 +56,8 @@ export class Dashboard implements OnInit {
   filteredTasksCount = computed(() => this.filteredTasks().length);
   @ViewChild('statusDropdown') statusDropdown!: ElementRef;
   dialogSubmitText = signal('Save');
+  sortField = signal<'title' | 'createdAt'>('createdAt');
+  sortDirection = signal<'asc' | 'desc'>('desc');
 
   constructor(public taskService: TaskService, private toastr: ToastrService) {
     this.tasks = this.taskService.tasks;
@@ -124,6 +126,17 @@ export class Dashboard implements OnInit {
     this.showStatusDropdown = true;
   }
 
+  sortBy(field: 'title' | 'createdAt') {
+    if (this.sortField() === field) {
+      this.sortDirection.set(
+        this.sortDirection() === 'asc' ? 'desc' : 'asc'
+      );
+    } else {
+      this.sortField.set(field);
+      this.sortDirection.set('asc');
+    }
+  }
+
   openTasksDropdown(event: Event) {
     event.stopPropagation();
     this.isTasksDropdownOpen = !this.isTasksDropdownOpen;
@@ -162,8 +175,10 @@ export class Dashboard implements OnInit {
     const term = this.searchTerm().toLowerCase();
     const status = this.selectedStatus();
     const range = this.dateRange();
+    const sortField = this.sortField();
+    const sortDirection = this.sortDirection();
 
-    return this.tasks().filter(task => {
+    const filtered = this.tasks().filter(task => {
 
       const matchesSearch =
         !term || task.title.toLowerCase().includes(term);
@@ -184,6 +199,24 @@ export class Dashboard implements OnInit {
       }
 
       return matchesSearch && matchesStatus && matchesDate;
+    });
+
+    // 🔽 SORTING LOGIC
+    return filtered.sort((a, b) => {
+      let valA: any;
+      let valB: any;
+
+      if (sortField === 'title') {
+        valA = a.title.toLowerCase();
+        valB = b.title.toLowerCase();
+      } else {
+        valA = new Date(a.createdAt).getTime();
+        valB = new Date(b.createdAt).getTime();
+      }
+
+      return sortDirection === 'asc'
+        ? valA > valB ? 1 : -1
+        : valA < valB ? 1 : -1;
     });
   });
 
