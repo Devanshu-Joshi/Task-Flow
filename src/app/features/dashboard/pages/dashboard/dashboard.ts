@@ -12,11 +12,12 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { StatsCard } from '@features/dashboard/components/stats-card/stats-card';
+import { TaskFilters } from '@features/dashboard/components/task-filters/task-filters';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard],
+  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -51,12 +52,7 @@ export class Dashboard implements OnInit {
   }
 
   fb = inject(FormBuilder);
-  showStatusDropdown = false;
   dateRange = signal<{ startDate: any; endDate: any } | null>(null);
-  dropdownPosition = {
-    top: 0,
-    left: 0
-  };
   selectedStatus = signal<string | null>(null); // '' means All
   tasks!: Signal<Task[]>;
   searchControl = new FormControl('');
@@ -65,7 +61,6 @@ export class Dashboard implements OnInit {
   deletingTaskId: string | null = null;
   dialogTitle = signal('Add');
   isEditing = signal<boolean>(false);
-  @ViewChild('dateRangeInput') dateRangeInput!: ElementRef<HTMLInputElement>;
   p: number = 1;
   itemsPerPage = 5;
   pageSizeOptions = [5, 10, 20, 'All'] as const;
@@ -76,7 +71,6 @@ export class Dashboard implements OnInit {
   dialogDescription = signal('Add task details below');
   dialogTitleColor = signal('text-primary');
   filteredTasksCount = computed(() => this.filteredTasks().length);
-  @ViewChild('statusDropdown') statusDropdown!: ElementRef;
   dialogSubmitText = signal('Save');
   sortField = signal<'title' | 'createdAt'>('createdAt');
   sortDirection = signal<'asc' | 'desc'>('desc');
@@ -99,10 +93,6 @@ export class Dashboard implements OnInit {
     }
   });
 
-  onStatusChange(value: string) {
-    this.selectedStatus.set(value);
-  }
-
   ngOnInit() {
     this.searchControl.valueChanges
       .pipe(debounceTime(300))
@@ -113,10 +103,6 @@ export class Dashboard implements OnInit {
 
   ngOnDestroy() {
     document.body.classList.remove('body-lock');
-  }
-
-  ngAfterViewInit() {
-    this.dateRangeInput.nativeElement.value = '';
   }
 
   totalTasks = computed(() => this.tasks().length);
@@ -142,27 +128,6 @@ export class Dashboard implements OnInit {
     status: ['Incomplete' as TaskStatus, Validators.required]
   });
 
-  openStatusDropdown(event: MouseEvent) {
-    event.stopPropagation();
-
-    if (this.showStatusDropdown) {
-      this.closeStatusDropdown();
-      return;
-    }
-
-    const button = (event.target as HTMLElement).closest('button');
-    if (!button) return;
-
-    const rect = button.getBoundingClientRect();
-
-    this.dropdownPosition = {
-      top: rect.bottom + 6,
-      left: rect.left
-    };
-
-    this.showStatusDropdown = true;
-  }
-
   sortBy(field: 'title' | 'createdAt') {
     if (this.sortField() === field) {
       this.sortDirection.set(
@@ -180,32 +145,12 @@ export class Dashboard implements OnInit {
   }
 
   setItemsPerPage(value: number | 'All') {
-    this.selectedPageSize.set(value);
 
     this.itemsPerPage =
       value === 'All' ? this.totalItems() : value;
 
     this.p = 1;
     this.isTasksDropdownOpen = false;
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-
-    if (
-      this.showStatusDropdown &&
-      this.statusDropdown &&
-      !this.statusDropdown.nativeElement.contains(target)
-    ) {
-      this.closeStatusDropdown();
-    }
-
-    this.isTasksDropdownOpen = false;
-  }
-
-  closeStatusDropdown() {
-    this.showStatusDropdown = false;
   }
 
   filteredTasks = computed(() => {
@@ -255,11 +200,6 @@ export class Dashboard implements OnInit {
         : valA < valB ? 1 : -1;
     });
   });
-
-  selectStatus(status: string) {
-    this.selectedStatus.set(status);
-    this.showStatusDropdown = false;
-  }
 
   async submit() {
     if (this.taskForm.invalid) return;

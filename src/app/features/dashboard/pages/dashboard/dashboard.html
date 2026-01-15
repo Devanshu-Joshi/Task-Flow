@@ -23,99 +23,14 @@
 
 
         <div class="w-full bg-white rounded-lg px-10 pb-10 pt-7">
-            <div class="flex flex-col lg:flex-row w-full gap-4 mb-5">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-3 w-full">
-                    <div class="relative w-full lg:flex-1 min-w-0">
-                        <input type="search"
-                            class="w-full border-2 border-gray-300 pr-10 pl-4 py-2 rounded-lg text-sm sm:text-base focus:outline-none"
-                            placeholder="Search..." [formControl]="searchControl" />
 
-                        <i
-                            class="bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"></i>
-                    </div>
+            <!-- Task Filters Component -->
 
-                    <div>
-                        <input #dateRangeInput ngxDaterangepickerMd [ngModel]="dateRange()"
-                            (ngModelChange)="dateRange.set($event)" [autoApply]="false" [alwaysShowCalendars]="true"
-                            [showClearButton]="true" [drops]="'down'" [opens]="'right'"
-                            [locale]="{ format: 'DD/MM/YYYY' }" [linkedCalendars]="true"
-                            placeholder="Filter by date range"
-                            class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full lg:w-64 cursor-pointer" />
-                    </div>
-
-                    <div class="relative w-full lg:w-auto">
-                        <ng-select class="status-select w-full lg:w-auto" [items]="statusOptions" bindLabel="label"
-                            bindValue="value" [(ngModel)]="selectedStatus" (ngModelChange)="onStatusChange($event)"
-                            [clearable]="false" [searchable]="false" [closeOnSelect]="true">
-
-                            <!-- Placeholder -->
-                            <ng-template ng-placeholder-tmp #placeholder>
-                                <span class="text-gray-700 font-semibold">Status</span>
-                            </ng-template>
-
-                            <!-- Selected value -->
-                            <ng-template ng-label-tmp let-item="item">
-                                @if (item?.value !== null) {
-                                <span [ngClass]="{
-        'text-green-600': item.value === 'Completed',
-        'text-yellow-600': item.value === 'InProgress',
-        'text-red-600': item.value === 'Incomplete'
-      }">
-                                    {{ item.label }}
-                                </span>
-                                } @else {
-                                <ng-template [ngTemplateOutlet]="placeholder"></ng-template>
-                                }
-                            </ng-template>
-
-                            <!-- Dropdown options -->
-                            <ng-template ng-option-tmp let-item="item">
-                                <span [ngClass]="{
-        'text-gray-700': item.value === null,
-        'text-green-600': item.value === 'Completed',
-        'text-yellow-600': item.value === 'InProgress',
-        'text-red-600': item.value === 'Incomplete'
-      }">
-                                    {{ item.label }}
-                                </span>
-                            </ng-template>
-
-                        </ng-select>
-                    </div>
-
-                    <div class="relative w-full lg:w-auto">
-
-                        <ng-select class="tasks-per-page-select w-full lg:w-auto" [items]="pageSizeOptions"
-                            [clearable]="false" [searchable]="false" [(ngModel)]="selectedPageSize"
-                            (change)="setItemsPerPage($event)" [closeOnSelect]="true">
-
-                            <!-- Custom label inside the selector -->
-                            <ng-template ng-label-tmp let-item="item">
-                                <span>
-                                    Tasks per page : <strong>{{ item }}</strong>
-                                </span>
-                            </ng-template>
-
-                            <!-- Custom option -->
-                            <ng-template ng-option-tmp let-item="item">
-                                {{ item }}
-                            </ng-template>
-
-                        </ng-select>
-
-                    </div>
-
-                </div>
-
-                <div class="flex gap-2 shrink-0">
-                    <button class="cursor-pointer py-2 px-2 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600
-                 text-white
-                 shadow-md shadow-purple-500/30
-                 hover:shadow-lg hover:shadow-purple-500/40
-                 hover:scale-105
-                 transition-all duration-200" (click)="toggleDialog()">Add Task</button>
-                </div>
-            </div>
+            <app-task-filters [statusOptions]="statusOptions" [pageSizeOptions]="pageSizeOptions"
+                [searchControl]="searchControl" [(dateRange)]="dateRange" [(selectedStatus)]="selectedStatus"
+                [(selectedPageSize)]="selectedPageSize" (pageSizeChangeTrigger)="setItemsPerPage($event)"
+                (addTask)="toggleDialog()">
+            </app-task-filters>
 
             <div class="border border-gray-200 rounded-xl shadow-sm overflow-hidden bg-white">
                 <div class="overflow-x-auto">
@@ -255,31 +170,6 @@
             </div>
 
         </div>
-
-        @if (showStatusDropdown) {
-        <div #statusDropdown class="fixed z-9999 w-44 bg-white border border-gray-200 rounded-md shadow-lg"
-            [style.top.px]="dropdownPosition.top" [style.left.px]="dropdownPosition.left">
-            <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                (click)="selectStatus('')">
-                All
-            </button>
-
-            <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-green-600 cursor-pointer"
-                (click)="selectStatus('Completed')">
-                Completed
-            </button>
-
-            <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-yellow-600 cursor-pointer"
-                (click)="selectStatus('InProgress')">
-                In Progress
-            </button>
-
-            <button class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600 cursor-pointer"
-                (click)="selectStatus('Incomplete')">
-                Incomplete
-            </button>
-        </div>
-        }
 
         @if(isDialogClosed == false) {
 

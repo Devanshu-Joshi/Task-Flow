@@ -1,3 +1,40 @@
+.page-wrapper.loading {
+    filter: blur(4px);
+    opacity: 0.5;
+    pointer-events: none;
+    /* 🔥 disables ALL interaction */
+    user-select: none;
+}
+
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #ddd;
+    border-top-color: #3f51b5;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/*** Dialog Opening Buttons ***/
+
 .submit-btn {
     width: 100%;
     padding: 0.75rem 0;
@@ -107,133 +144,4 @@
 .delete-btn:disabled:hover {
     transform: translateY(0);
     box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-}
-
-:host ::ng-deep .tasks-per-page-select.ng-select {
-    min-width: auto;
-}
-
-:host ::ng-deep .tasks-per-page-select .ng-select-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    /* gap-2 */
-    border-width: 2px;
-    border-style: solid;
-    border-color: #d1d5db;
-    /* gray-300 */
-    padding: 0 1rem;
-    /* py-2 px-4 */
-    border-radius: 0.5rem;
-    /* rounded-lg */
-    cursor: pointer;
-    transition: border-color 150ms ease-in-out;
-    min-height: 2.75rem;
-}
-
-:host ::ng-deep .tasks-per-page-select .ng-select-container:hover {
-    border-color: #6366f1;
-    /* indigo-500 */
-}
-
-/* Remove default input spacing */
-:host ::ng-deep .tasks-per-page-select .ng-value-container {
-    padding: 0;
-}
-
-/* Hide search caret spacing */
-:host ::ng-deep .tasks-per-page-select .ng-input {
-    display: none;
-}
-
-/* Chevron icon */
-:host ::ng-deep .tasks-per-page-select .ng-arrow {
-    border: none;
-}
-
-/* Status */
-
-.status-select ::ng-deep .ng-select-container {
-    display: flex;
-    align-items: center;
-    border: 2px solid #d1d5db;
-    /* gray-300 */
-    border-radius: 0.5rem;
-    /* rounded-lg */
-    padding: 0.5rem 1rem;
-    /* px-4 py-2 */
-    min-height: 42px;
-    cursor: pointer;
-    transition: border-color 150ms ease-in-out;
-}
-
-.status-select ::ng-deep .ng-select-container:hover {
-    border-color: #6366f1;
-    /* indigo-500 */
-}
-
-.status-select ::ng-deep .ng-arrow {
-    color: #6b7280;
-    /* gray-500 */
-}
-
-.status-select ::ng-deep .ng-dropdown-panel {
-    border: 1px solid #e5e7eb;
-    /* gray-200 */
-    border-radius: 0.375rem;
-    /* rounded-md */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    /* shadow-lg */
-}
-
-.status-select {
-    min-width: max-content;
-}
-
-/* Ensure the selected value doesn’t shrink */
-.status-select ::ng-deep .ng-select-container {
-    min-width: 9rem;
-    /* adjust once, stays dynamic */
-}
-
-/* Prevent text wrapping */
-.status-select ::ng-deep .ng-value,
-.status-select ::ng-deep .ng-option {
-    white-space: nowrap;
-}
-
-.page-wrapper.loading {
-    filter: blur(4px);
-    opacity: 0.5;
-    pointer-events: none;
-    /* 🔥 disables ALL interaction */
-    user-select: none;
-}
-
-.loader-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.7);
-    z-index: 9999;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-
-.spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid #ddd;
-    border-top-color: #3f51b5;
-    border-radius: 50%;
-    animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
 }
