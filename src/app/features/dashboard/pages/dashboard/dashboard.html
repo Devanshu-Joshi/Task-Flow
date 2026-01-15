@@ -3,54 +3,25 @@
     <div class="min-h-full w-full bg-linear-to-r from-purple-600 via-fuchsia-600 to-indigo-600 flex items-center flex-col px-4 sm:px-6 lg:px-7
          py-4 sm:py-6 lg:py-7
          gap-6 sm:gap-8">
+
+        <!-- Stats Card Component -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-            <div class="bg-white rounded-xl p-5 flex flex-col sm:flex-row
-            justify-between items-start sm:items-center shadow-sm gap-4">
-                <div class="flex flex-col gap-3">
-                    <p class="text-sm font-semibold text-gray-500">Total Tasks</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ totalTasks() }}</p>
-                    <p class="text-sm text-gray-400">Tasks created so far</p>
-                </div>
-                <div class="bg-purple-100 rounded-lg p-2 flex items-center">
-                    <i class="bx bx-list-ul text-3xl text-purple-600"></i>
-                </div>
-            </div>
+            <app-stats-card title="Total Tasks" [value]="totalTasks()" subtitle="Tasks created so far" icon="bx-list-ul"
+                theme="purple" />
 
-            <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm">
-                <div class="flex flex-col gap-3">
-                    <p class="text-sm font-semibold text-gray-500">Completed Tasks</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ completedTasks() }}</p>
-                    <p class="text-sm text-green-600">Great job!</p>
-                </div>
-                <div class="bg-green-100 p-2 rounded-lg flex items-center">
-                    <i class="bx bx-check-circle text-3xl text-green-600"></i>
-                </div>
-            </div>
+            <app-stats-card title="Completed Tasks" [value]="completedTasks()" subtitle="Great job!"
+                icon="bx-check-circle" theme="green" />
 
-            <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm">
-                <div class="flex flex-col gap-3">
-                    <p class="text-sm font-semibold text-gray-500">In Progress Tasks</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ inProgressTasks() }}</p>
-                    <p class="text-sm text-yellow-600">Keep going!</p>
-                </div>
-                <div class="bg-yellow-100 p-2 rounded-lg flex items-center">
-                    <i class="bx bx-loader-dots text-3xl text-yellow-600"></i>
-                </div>
-            </div>
+            <app-stats-card title="In Progress Tasks" [value]="inProgressTasks()" subtitle="Keep going!"
+                icon="bx-loader-dots" theme="yellow" />
 
-            <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm">
-                <div class="flex flex-col gap-3">
-                    <p class="text-sm font-semibold text-gray-500">Incomplete Tasks</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ incompleteTasks() }}</p>
-                    <p class="text-sm text-red-600">Needs attention</p>
-                </div>
-                <div class="bg-red-100 p-2 rounded-lg flex items-center">
-                    <i class="bx bx-x-circle text-3xl text-red-600"></i>
-                </div>
-            </div>
+            <app-stats-card title="Incomplete Tasks" [value]="incompleteTasks()" subtitle="Needs attention"
+                icon="bx-x-circle" theme="red" />
 
         </div>
+
+
         <div class="w-full bg-white rounded-lg px-10 pb-10 pt-7">
             <div class="flex flex-col lg:flex-row w-full gap-4 mb-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:flex gap-3 w-full">
