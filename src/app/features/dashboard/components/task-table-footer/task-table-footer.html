@@ -1,0 +1,23 @@
+<td [attr.colspan]="colspan">
+    <div class="flex w-full justify-between items-end">
+        <div class="p-5 text-sm text-gray-500">
+            Total Tasks :
+            <span class="ml-1 font-bold text-gray-900">
+                {{ total }}
+            </span>
+        </div>
+
+        <div class="pt-10 flex items-start">
+            <button (click)="clearFilters.emit()" class="px-2 py-1 text-sm font-medium text-gray-500
+               hover:text-gray-700 hover:underline
+               focus:outline-none cursor-pointer">
+                Clear Filters
+            </button>
+
+            @if(total > itemsPerPage && total > 0) {
+            <pagination-controls previousLabel="Prev" nextLabel="Next" (pageChange)="pageChange.emit($event)">
+            </pagination-controls>
+            }
+        </div>
+    </div>
+</td>

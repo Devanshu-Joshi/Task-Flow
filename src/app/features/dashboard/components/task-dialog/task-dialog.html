@@ -1,0 +1,18 @@
+@if (open) {
+<div class="fixed top-0 left-0 w-full h-full bg-black/40 backdrop-blur-md z-40 transition-opacity"></div>
+
+<div class="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center">
+    <div class="relative w-full max-w-md px-4 bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-200">
+
+        <div class="absolute top-4 right-4">
+            <button type="button" (click)="close.emit()"
+                class="rounded-full p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-100 flex items-center transition cursor-pointer">
+                <i class="bx bx-x text-2xl"></i>
+            </button>
+        </div>
+
+        <ng-content></ng-content>
+
+    </div>
+</div>
+}

@@ -42,98 +42,82 @@
 
         </div>
 
-        @if(isDialogClosed == false) {
+        <app-task-dialog [open]="isDialogClosed == false" (close)="toggleDialog()">
 
-        <div class="fixed top-0 left-0 w-full h-full bg-black/40 backdrop-blur-md z-40 transition-opacity"></div>
+            <div class="px-8 pt-8 pb-4 text-center">
+                <p class="text-2xl font-semibold tracking-tight"
+                    [ngClass]="{'text-black': dialogTitleColor() === 'text-primary','text-yellow-500': dialogTitleColor() === 'text-warn','text-red-600': dialogTitleColor() === 'text-danger'}">
+                    {{dialogTitle()}} Task
+                </p>
+                <p class="text-sm text-gray-500 mt-1">
+                    {{dialogDescription()}}
+                </p>
+            </div>
 
-        <div class="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center">
-            <div
-                class="relative w-full max-w-md px-4 bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-200">
+            <form [formGroup]="taskForm" (ngSubmit)="submit()" class="px-8 pb-8">
 
-                <div class="absolute top-4 right-4">
-                    <button type="button" (click)="toggleDialog()"
-                        class="rounded-full p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-100 flex items-center transition cursor-pointer">
-                        <i class='bx bx-x text-2xl'></i>
-                    </button>
-                </div>
-
-                <div class="px-8 pt-8 pb-4 text-center">
-                    <p class="text-2xl font-semibold tracking-tight"
-                        [ngClass]="{'text-black': dialogTitleColor() === 'text-primary','text-yellow-500': dialogTitleColor() === 'text-warn','text-red-600': dialogTitleColor() === 'text-danger'}">
-                        {{dialogTitle()}} Task
-                    </p>
-                    <p class="text-sm text-gray-500 mt-1">
-                        {{dialogDescription()}}
-                    </p>
-                </div>
-
-                <form [formGroup]="taskForm" (ngSubmit)="submit()" class="px-8 pb-8">
-
-                    <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-3
+                <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-3
                        focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-                        <i class='bx bx-edit text-gray-400'></i>
-                        <input type="text" formControlName="title"
-                            class="w-full outline-none text-sm placeholder-gray-400" placeholder="Task Name" [ngClass]="{
+                    <i class='bx bx-edit text-gray-400'></i>
+                    <input type="text" formControlName="title" class="w-full outline-none text-sm placeholder-gray-400"
+                        placeholder="Task Name" [ngClass]="{
                             'cursor-not-allowed': isDeleting(),
                             'cursor-auto': !isDeleting()
                         }" />
-                    </div>
+                </div>
 
-                    @if(taskForm.controls.title.touched && taskForm.controls.title.invalid) {
-                    <p class="text-red-500 text-xs mt-1">
-                        Task name is required (min 3 chars)
-                    </p>
-                    }
+                @if(taskForm.controls.title.touched && taskForm.controls.title.invalid) {
+                <p class="text-red-500 text-xs mt-1">
+                    Task name is required (min 3 chars)
+                </p>
+                }
 
-                    <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
+                <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
                        focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-                        <i class='bx bx-calendar text-gray-400'></i>
-                        <input type="date" formControlName="dueDate" class="w-full outline-none text-sm" [ngClass]="{
+                    <i class='bx bx-calendar text-gray-400'></i>
+                    <input type="date" formControlName="dueDate" class="w-full outline-none text-sm" [ngClass]="{
                             'cursor-not-allowed': isDeleting(),
                             'cursor-auto': !isDeleting()
                         }" />
-                    </div>
+                </div>
 
-                    @if(taskForm.controls.dueDate.touched && taskForm.controls.dueDate.invalid) {
-                    <p class="text-red-500 text-xs mt-1">
-                        Due date is required
-                    </p>
-                    }
+                @if(taskForm.controls.dueDate.touched && taskForm.controls.dueDate.invalid) {
+                <p class="text-red-500 text-xs mt-1">
+                    Due date is required
+                </p>
+                }
 
-                    <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
+                <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
                        focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-                        <i class='bx bx-flag text-gray-400'></i>
-                        <select formControlName="status" class="w-full outline-none text-sm bg-transparent" [ngClass]="{
+                    <i class='bx bx-flag text-gray-400'></i>
+                    <select formControlName="status" class="w-full outline-none text-sm bg-transparent" [ngClass]="{
                             'cursor-auto': !isDeleting(),
                             'cursor-not-allowed': isDeleting(),
                         }">
-                            <option value="Incomplete">Incomplete</option>
-                            <option value="Completed">Completed</option>
-                            <option value="InProgress">In Progress</option>
-                        </select>
-                    </div>
+                        <option value="Incomplete">Incomplete</option>
+                        <option value="Completed">Completed</option>
+                        <option value="InProgress">In Progress</option>
+                    </select>
+                </div>
 
-                    <div class="mt-8 flex gap-3">
-                        <button type="button" (click)="cancelDialog()" class="w-full py-3 rounded-xl font-medium
+                <div class="mt-8 flex gap-3">
+                    <button type="button" (click)="cancelDialog()" class="w-full py-3 rounded-xl font-medium
                text-gray-700 bg-gray-100
                hover:bg-gray-200
                transition-all duration-200 cursor-pointer">
-                            Cancel
-                        </button>
+                        Cancel
+                    </button>
 
-                        <button type="submit"
-                            [ngClass]="{'submit-btn text-white': dialogTitleColor() === 'text-primary','edit-btn text-white': dialogTitleColor() === 'text-warn','delete-btn text-white': dialogTitleColor() === 'text-danger'}"
-                            [disabled]="taskForm.invalid">
-                            {{dialogSubmitText()}} Task
-                        </button>
+                    <button type="submit"
+                        [ngClass]="{'submit-btn text-white': dialogTitleColor() === 'text-primary','edit-btn text-white': dialogTitleColor() === 'text-warn','delete-btn text-white': dialogTitleColor() === 'text-danger'}"
+                        [disabled]="taskForm.invalid">
+                        {{dialogSubmitText()}} Task
+                    </button>
 
-                    </div>
+                </div>
 
-                </form>
-            </div>
-        </div>
-
-        }
+            </form>
+        </app-task-dialog>
     </div>
 </div>
 

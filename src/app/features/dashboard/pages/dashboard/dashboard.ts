@@ -14,11 +14,12 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { StatsCard } from '@features/dashboard/components/stats-card/stats-card';
 import { TaskFilters } from '@features/dashboard/components/task-filters/task-filters';
 import { TaskTable } from '@features/dashboard/components/task-table/task-table';
+import { TaskDialog } from '@features/dashboard/components/task-dialog/task-dialog';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable],
+  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable, TaskDialog],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

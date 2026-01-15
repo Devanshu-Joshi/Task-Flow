@@ -4,10 +4,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { Task } from '@core/models/Task';
 import { TaskTableRow } from '@features/dashboard/components/task-table-row/task-table-row';
 import { EmptyState } from '../empty-state/empty-state';
+import { TaskTableFooter } from '../task-table-footer/task-table-footer';
 
 @Component({
   selector: 'app-task-table',
-  imports: [CommonModule, NgxPaginationModule, TaskTableRow, EmptyState],
+  imports: [CommonModule, NgxPaginationModule, TaskTableRow, EmptyState, TaskTableFooter],
   templateUrl: './task-table.html',
   styleUrl: './task-table.css',
 })
