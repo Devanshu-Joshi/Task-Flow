@@ -50,7 +50,8 @@
             <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
                 [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
                 [linkedCalendars]="true" placeholder="Filter by date range"
-                class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11" />
+                class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11"
+                (click)="toggleDatePicker()" />
         </div>
 
         <!-- Page Size Select (fixed width; fits label well) -->

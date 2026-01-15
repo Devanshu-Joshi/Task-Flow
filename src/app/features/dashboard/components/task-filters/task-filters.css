@@ -141,6 +141,10 @@
 
 /*** Date Range Picker ***/
 
+:host ::ng-deep .md-drppicker {
+    z-index: 75;
+}
+
 @media (max-width: 1024px) {
 
     :host ::ng-deep .md-drppicker,

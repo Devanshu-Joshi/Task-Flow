@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, model, input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, model, input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -38,4 +38,19 @@ export class TaskFilters {
     this.selectedPageSize.set(value); // Update the model
     this.pageSizeChangeTrigger.emit(value); // Notify parent to run logic (like resetting page index)
   }
+
+  toggleDatePicker() {
+    const picker = document.querySelector(
+      '.md-drppicker'
+    ) as HTMLElement;
+    if (picker.classList.contains("shown")) {
+      picker.classList.remove("shown");
+      picker.classList.add("hidden");
+    }
+    else {
+      picker.classList.remove("hidden");
+      picker.classList.add("shown");
+    }
+  }
+
 }
