@@ -16,11 +16,12 @@ import { TaskFilters } from '@features/dashboard/components/task-filters/task-fi
 import { TaskTable } from '@features/dashboard/components/task-table/task-table';
 import { TaskDialog } from '@features/dashboard/components/task-dialog/task-dialog';
 import { TaskForm } from '@features/dashboard/components/task-form/task-form';
+import { LoadingOverlay } from '@features/dashboard/components/loading-overlay/loading-overlay';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable, TaskDialog, TaskForm],
+  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable, TaskDialog, TaskForm, LoadingOverlay],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

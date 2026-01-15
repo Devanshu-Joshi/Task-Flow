@@ -55,7 +55,5 @@
     </div>
 </div>
 
-<div class="loader-overlay" *ngIf="isLoading()">
-    <div class="spinner"></div>
-    <p>Loading tasks…</p>
-</div>
+<!-- LoadingOverlay Component -->
+<app-loading-overlay [show]="isLoading()" text="Loading tasks…"></app-loading-overlay>
