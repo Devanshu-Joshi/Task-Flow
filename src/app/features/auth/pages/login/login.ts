@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../../../core/services/auth';
+import { AuthService } from '@core/services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { passwordStrengthValidator } from '../../../../core/functions/passwordStrengthValidator';
 import { CommonModule } from '@angular/common';
 
 @Component({

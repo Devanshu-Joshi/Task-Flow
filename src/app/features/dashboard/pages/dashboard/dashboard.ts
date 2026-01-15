@@ -1,8 +1,8 @@
 import { Component, effect, ElementRef, HostListener, inject, OnInit, Signal, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { TaskService } from '../../../../core/services/task';
+import { TaskService } from '@core/services/task';
 import { signal, computed } from '@angular/core';
-import { Task } from '../../../../core/models/Task';
+import { Task } from '@core/models/Task';
 import { debounceTime } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { StatsCard } from '../../../stats-card/stats-card';
+import { StatsCard } from '@features/dashboard/components/stats-card/stats-card';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({

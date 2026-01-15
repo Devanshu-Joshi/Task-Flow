@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../../../core/services/auth';
+import { AuthService } from '@core/services/auth';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { passwordStrengthValidator } from '../../../../core/functions/passwordStrengthValidator';
+import { passwordStrengthValidator } from '@core/functions/passwordStrengthValidator';
 import { CommonModule } from '@angular/common';
-import { confirmPasswordValidator } from '../../../../core/functions/confirmPasswordValidator';
+import { confirmPasswordValidator } from '@core/functions/confirmPasswordValidator';
 
 @Component({
   selector: 'app-signup',

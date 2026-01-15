@@ -6,7 +6,7 @@ import { routes } from './app.routes';
 
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';

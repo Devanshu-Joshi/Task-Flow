@@ -14,7 +14,7 @@ import {
 } from '@angular/fire/firestore';
 import { Unsubscribe } from 'firebase/auth';
 import { AuthService } from './auth';
-import { Task } from '../models/Task';
+import { Task } from '@core/models/Task';
 // export let isEditing = signal<boolean>(false);
 
 @Injectable({ providedIn: 'root' })
