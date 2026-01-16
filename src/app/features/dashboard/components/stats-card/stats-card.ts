@@ -15,7 +15,7 @@ export class StatsCard {
   @Input({ required: true }) subtitle!: string;
   @Input({ required: true }) icon!: string;
   @Input({ required: true }) theme!: StatsCardTheme;
-  @Input() subtitleColor?: string; // Optional override
+  @Input() subtitleColor?: string;
 
   // Theme-based CSS classes
   get iconBgClass(): string {

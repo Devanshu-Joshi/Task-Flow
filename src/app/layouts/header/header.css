@@ -1,0 +1,9 @@
+@media (max-width: 500px) {
+    .horizontalNavBar {
+        display: none;
+    }
+
+    .mobileNavBar {
+        display: block;
+    }
+}
