@@ -7,3 +7,17 @@
         display: block;
     }
 }
+
+@media (min-width: 501px) {
+    .horizontalNavBar {
+        display: flex;
+    }
+
+    .mobileNavBar {
+        display: none;
+    }
+
+    .mobileNavBarMenu {
+        display: none;
+    }
+}
