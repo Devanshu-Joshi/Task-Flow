@@ -12,21 +12,21 @@
                 <i class="bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"></i>
             </div>
 
-            <!-- Status Select (fixed width; fits placeholder + values) -->
+            <!-- Role Select (fixed width; fits placeholder + values) -->
             <div class="relative w-full min-w-20 sm:col-span-1 lg:w-50">
-                <ng-select class="status-select filter-select w-full" [items]="statusOptions" bindLabel="label"
-                    bindValue="value" [(ngModel)]="selectedStatus" [clearable]="false" [searchable]="false"
+                <ng-select class="role-select filter-select w-full" [items]="roleOptions" bindLabel="label"
+                    bindValue="value" [(ngModel)]="selectedRole" [clearable]="false" [searchable]="false"
                     [closeOnSelect]="true">
                     <ng-template ng-placeholder-tmp #placeholder>
-                        <span class="text-gray-700 font-semibold whitespace-nowrap">Status</span>
+                        <span class="text-gray-700 font-semibold whitespace-nowrap">Role</span>
                     </ng-template>
 
                     <ng-template ng-label-tmp let-item="item">
                         @if (item?.value !== null) {
                         <span class="whitespace-nowrap" [ngClass]="{
-                'text-green-600': item.value === 'Completed',
-                'text-yellow-600': item.value === 'InProgress',
-                'text-red-600': item.value === 'Incomplete'
+                'text-green-600': item.value === 'ROLE_ADMIN',
+                'text-yellow-600': item.value === 'ROLE_USER',
+                'text-red-600': item.value === 'ROLE_GUEST'
               }">
                             {{ item.label }}
                         </span>
@@ -38,9 +38,9 @@
                     <ng-template ng-option-tmp let-item="item">
                         <span class="whitespace-nowrap" [ngClass]="{
               'text-gray-700': item.value === null,
-              'text-green-600': item.value === 'Completed',
-              'text-yellow-600': item.value === 'InProgress',
-              'text-red-600': item.value === 'Incomplete'
+              'text-green-600': item.value === 'ROLE_ADMIN',
+              'text-yellow-600': item.value === 'ROLE_USER',
+              'text-red-600': item.value === 'ROLE_GUEST'
             }">
                             {{ item.label }}
                         </span>
@@ -59,12 +59,12 @@
 
             <!-- Page Size Select (fixed width; fits label well) -->
             <div class="relative w-full min-w-44 sm:col-span-1 lg:w-52">
-                <ng-select class="tasks-per-page-select filter-select w-full" [items]="pageSizeOptions"
+                <ng-select class="users-per-page-select filter-select w-full" [items]="pageSizeOptions"
                     [clearable]="false" [searchable]="false" [ngModel]="selectedPageSize()"
                     (ngModelChange)="onPageSizeChange($event)" [closeOnSelect]="true">
                     <ng-template ng-label-tmp let-item="item">
                         <span class="text-sm sm:text-base whitespace-nowrap">
-                            Tasks per page : <strong>{{ item }}</strong>
+                            Users per page : <strong>{{ item }}</strong>
                         </span>
                     </ng-template>
 
@@ -82,11 +82,9 @@
              text-white shadow-md shadow-purple-500/30
              hover:shadow-lg hover:shadow-purple-500/40
              lg:hover:scale-105 transition-all duration-200" (click)="toggleDialog()">
-                Add Task
+                Add User
             </button>
         </div>
     </div>
-
-    <!-- Task Tables -->
 
 </div>

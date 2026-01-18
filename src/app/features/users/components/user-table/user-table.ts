@@ -19,13 +19,13 @@ export class UserTable {
   // All Variables
   fb = inject(FormBuilder);
   searchControl: FormControl = new FormControl('');
-  statusOptions = [
+  roleOptions = [
     { label: 'All', value: null },
-    { label: 'Completed', value: 'Completed' },
-    { label: 'In Progress', value: 'InProgress' },
-    { label: 'Incomplete', value: 'Incomplete' }
+    { label: 'Admin', value: 'ROLE_ADMIN' },
+    { label: 'User', value: 'ROLE_USER' },
+    { label: 'Guest', value: 'ROLE_GUEST' }
   ];
-  selectedStatus = signal<string | null>(null);
+  selectedRole = signal<string | null>(null);
   dateRange = signal<{ startDate: any; endDate: any } | null>(null);
   selectedPageSize = model<number | 'All'>(5);
   itemsPerPage = 5;
@@ -75,7 +75,7 @@ export class UserTable {
 
   filteredTasks = computed(() => {
     const term = this.searchTerm().toLowerCase();
-    const status = this.selectedStatus();
+    const status = this.selectedRole();
     const range = this.dateRange();
     const sortField = this.sortField();
     const sortDirection = this.sortDirection();
