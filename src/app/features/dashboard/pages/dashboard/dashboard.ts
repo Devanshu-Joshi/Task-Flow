@@ -149,7 +149,6 @@ export class Dashboard implements OnInit {
   }
 
   setItemsPerPage(value: number | 'All') {
-
     this.itemsPerPage =
       value === 'All' ? this.totalItems() : value;
 

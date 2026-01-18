@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { UserTable } from '@features/users/components/user-table/user-table';
 
 @Component({
   selector: 'app-user',
-  imports: [],
+  imports: [UserTable],
   templateUrl: './user.html',
   styleUrl: './user.css',
 })

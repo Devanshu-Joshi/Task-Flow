@@ -49,7 +49,7 @@ export class Login {
     const { email, password } = this.loginForm.value;
 
     try {
-      const response = await this.userAuth.login(email!, password!);
+      const response = await this.authService.login(email!, password!);
       console.log(response);
       this.router.navigate(['/dashboard']);
       this.toastr.success('Login successful', 'Success');
