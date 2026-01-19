@@ -78,12 +78,17 @@ export class UserAuth {
     return localStorage.getItem('token');
   }
 
-  private decodeToken(token: string): any {
-    return JSON.parse(atob(token.split('.')[1]));
+  private decodeToken(token: string): any | null {
+    try {
+      return JSON.parse(atob(token.split('.')[1]));
+    } catch {
+      return null;
+    }
   }
 
   private isTokenExpired(token: string): boolean {
     const payload = this.decodeToken(token);
+    if (!payload?.exp) return true;
     return payload.exp * 1000 < Date.now();
   }
 }
