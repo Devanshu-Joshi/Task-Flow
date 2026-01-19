@@ -10,6 +10,11 @@ interface LoginResponse {
   user?: any; // optional user payload
 }
 
+interface RegisterResponse {
+  token: string;
+  user?: any;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UserAuth {
 
@@ -52,6 +57,20 @@ export class UserAuth {
     );
   }
 
+  // 🔹 Register
+  register(payload: { email: string; password: string, parent_Id: number }) {
+    console.log("Entered");
+    return this.http
+      .post<string>(`${this.apiUrl}/signup`, payload, { responseType: 'text' as 'json' })
+      .pipe(
+        tap(message => {
+          this.toastr.success(message || 'Registration successful', 'Success');
+          this.router.navigate(['/login']);
+        })
+      );
+  }
+
+
   // 🔹 Logout
   logout() {
     this.clearAuth();
@@ -67,13 +86,11 @@ export class UserAuth {
     this.isLoggedIn.set(false);
   }
 
-  // 🔹 Guard sync check
   isAuthenticatedSync(): boolean {
     const token = this.getToken();
     return !!token && !this.isTokenExpired(token);
   }
 
-  // 🔹 Token helpers
   getToken(): string | null {
     return localStorage.getItem('token');
   }

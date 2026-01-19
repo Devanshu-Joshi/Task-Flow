@@ -35,7 +35,7 @@ export class Signup {
   }
 
   constructor(private fb: FormBuilder, private authService: UserAuth, private router: Router, private toastr: ToastrService) {
-    this.signupForm = this.fb.group({
+    this.signupForm = this.fb.nonNullable.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator]],
       cpassword: ['', [Validators.required]]
@@ -86,10 +86,12 @@ export class Signup {
       return;
     }
 
-    const { email, password, cpassword } = this.signupForm.value;
+    console.log(this.signupForm.getRawValue());
+
+    const { email, password, cpassword } = this.signupForm.getRawValue();
 
     try {
-      // await this.authService.register(email!, password!);
+      await this.authService.register({ email: email, password: password, parent_Id: -1 });
       this.toastr.success('Registration successful', 'Success');
       this.router.navigate(['/login']);
     } catch (error: any) {
