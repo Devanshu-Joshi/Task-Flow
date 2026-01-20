@@ -12,9 +12,9 @@
     <span
         class="inline-flex items-center px-2 py-1 sm:px-2.5 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap"
         [ngClass]="{
-      'bg-green-50 text-green-600': task.status === 'Completed',
-      'bg-blue-50 text-yellow-600': task.status === 'InProgress',
-      'bg-red-50 text-red-600': task.status === 'Incomplete'
+      'bg-green-50 text-green-600': task.status === 'COMPLETED',
+      'bg-blue-50 text-yellow-600': task.status === 'IN_PROGRESS',
+      'bg-red-50 text-red-600': task.status === 'INCOMPLETE'
     }">
         {{ task.status }}
     </span>

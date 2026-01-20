@@ -2,7 +2,7 @@ import { Component, effect, inject, OnInit, Signal, ViewChild } from '@angular/c
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { TaskService } from '@core/services/task';
 import { signal, computed } from '@angular/core';
-import { TaskView } from '@core/models/Task';
+import { Task, TaskView } from '@core/models/Task';
 import { debounceTime } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
@@ -18,7 +18,7 @@ import { TaskDialog } from '@features/dashboard/components/task-dialog/task-dial
 import { TaskForm } from '@features/dashboard/components/task-form/task-form';
 import { LoadingOverlay } from '@features/dashboard/components/loading-overlay/loading-overlay';
 
-export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
+export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
 @Component({
   selector: 'app-dashboard',
   imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable, TaskDialog, TaskForm, LoadingOverlay],
@@ -80,9 +80,9 @@ export class Dashboard implements OnInit {
   sortDirection = signal<'asc' | 'desc'>('desc');
   statusOptions = [
     { label: 'All', value: null },
-    { label: 'Completed', value: 'Completed' },
-    { label: 'In Progress', value: 'InProgress' },
-    { label: 'Incomplete', value: 'Incomplete' }
+    { label: 'Completed', value: 'COMPLETED' },
+    { label: 'In Progress', value: 'IN_PROGRESS' },
+    { label: 'Incomplete', value: 'INCOMPLETE' }
   ];
   isLoading = computed(() => this.taskService.loading());
 
@@ -112,15 +112,15 @@ export class Dashboard implements OnInit {
   totalTasks = computed(() => this.tasks().length);
 
   completedTasks = computed(
-    () => this.tasks().filter(task => task.status === 'Completed').length
+    () => this.tasks().filter(task => task.status === 'COMPLETED').length
   );
 
   inProgressTasks = computed(
-    () => this.tasks().filter(t => t.status === 'InProgress').length
+    () => this.tasks().filter(t => t.status === 'IN_PROGRESS').length
   );
 
   incompleteTasks = computed(
-    () => this.tasks().filter(t => t.status === 'Incomplete').length
+    () => this.tasks().filter(t => t.status === 'INCOMPLETE').length
   );
 
   taskForm = this.fb.nonNullable.group({
@@ -129,7 +129,9 @@ export class Dashboard implements OnInit {
       Validators.minLength(3)
     ]],
     dueDate: ['', Validators.required],
-    status: ['Incomplete' as TaskStatus, Validators.required]
+    status: ['INCOMPLETE' as TaskStatus, Validators.required],
+    priority: ['Normal', Validators.required],
+    assignedTo: [[] as string[]]
   });
 
   sortBy(field: 'title' | 'createdAt') {
@@ -207,19 +209,18 @@ export class Dashboard implements OnInit {
   async submit() {
     if (this.taskForm.invalid) return;
 
-    const value = this.taskForm.getRawValue();
+    const value = this.taskForm.value;
+
+    console.log(value);
 
     if (this.editingTaskId) {
-      await this.taskService.updateTask({
-        ...value,
-        id: this.editingTaskId
-      } as TaskView);
+      await this.taskService.updateTask(this.editingTaskId, value as Task);
     }
     else if (this.isDeleting()) {
       await this.taskService.deleteTask(this.deletingTaskId!);
     }
     else {
-      await this.taskService.addTask(value as TaskView);
+      await this.taskService.addTask(value as Task);
     }
 
     if (this.isEditing()) {
@@ -289,7 +290,7 @@ export class Dashboard implements OnInit {
     this.taskForm.reset({
       title: '',
       dueDate: '',
-      status: 'Incomplete'
+      status: 'INCOMPLETE'
     });
 
     this.editingTaskId = null;

@@ -75,7 +75,7 @@ export class UserTable {
       ]
     ],
     dueDate: ['', Validators.required],
-    status: ['Incomplete' as TaskStatus, Validators.required]
+    status: ['INCOMPLETE' as TaskStatus, Validators.required]
   });
 
   /* -------------------------------------------------------------------------- */
@@ -309,7 +309,7 @@ export class UserTable {
     this.taskForm.reset({
       title: '',
       dueDate: '',
-      status: 'Incomplete'
+      status: 'INCOMPLETE'
     });
 
     this.taskForm.enable();

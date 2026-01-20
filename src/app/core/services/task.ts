@@ -1,145 +1,112 @@
-import { Injectable, signal, computed } from '@angular/core';
-import {
-  collection,
-  addDoc,
-  query,
-  where,
-  orderBy,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  getDoc,
-  Firestore,
-  updateDoc
-
-} from '@angular/fire/firestore';
-import { Unsubscribe } from 'firebase/auth';
-import { AuthService } from './auth';
-import { TaskView } from '@core/models/Task';
-// export let isEditing = signal<boolean>(false);
+import { Injectable, signal, computed, effect } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Task, TaskView } from '@core/models/Task';
+import { UserAuth } from './user-auth';
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
 
-  readonly tasks = signal<TaskView[]>([]);
-  readonly loading = signal<boolean>(true);
-  readonly tasksView = computed<TaskView[]>(() => {
-    return [...this.tasks()]
+  private readonly API_URL = 'http://localhost:3080/api/tasks';
+
+  // ✅ Store RAW backend data only
+  readonly tasks = signal<Task[]>([]);
+  readonly loading = signal<boolean>(false);
+  readonly error = signal<string | null>(null);
+
+  // ✅ UI-only transformation
+  readonly tasksView = computed<TaskView[]>(() =>
+    [...this.tasks()]
       .sort((a, b) => a.createdAt - b.createdAt)
       .map((task, index) => ({
         ...task,
         displayId: index + 1
-      }));
-  });
-
-
-  private unsubscribeTasks?: Unsubscribe;
+      }))
+  );
 
   constructor(
-    private firestore: Firestore,
-    private authService: AuthService
+    private http: HttpClient,
+    private authService: UserAuth
   ) {
     this.listenToAuth();
   }
 
+  /* -------------------------
+   * Auth-driven sync
+   * ------------------------- */
   private listenToAuth() {
-    this.authService.user$.subscribe(user => {
+    effect(() => {
+      const user = this.authService.user();
 
-      this.unsubscribeTasks?.();
-      this.unsubscribeTasks = undefined;
       this.tasks.set([]);
-      this.loading.set(true);
+      this.error.set(null);
 
       if (!user) {
         this.loading.set(false);
         return;
       }
 
-      this.startTaskListener(user.uid);
+      this.fetchTasks();
     });
   }
 
-  private startTaskListener(uid: string) {
-    const q = query(
-      collection(this.firestore, 'tasks'),
-      where('userId', '==', uid),
-      orderBy('createdAt', 'desc')
-    );
+  /* -------------------------
+   * API calls
+   * ------------------------- */
 
-    let firstSnapshot = true;
+  fetchTasks() {
+    alert("Loading...");
+    this.loading.set(true);
 
-    this.unsubscribeTasks = onSnapshot(
-      q,
-      snapshot => {
-        const tasks = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }) as TaskView);
-
+    this.http.get<Task[]>(this.API_URL + "/getTasksByParent").subscribe({
+      next: tasks => {
+        alert("Loading Completed");
         this.tasks.set(tasks);
-
-        if (firstSnapshot) {
-          this.loading.set(false);
-          firstSnapshot = false;
-        }
+        this.loading.set(false);
       },
-      error => {
-        console.error('Firestore task listener error:', error);
+      error: () => {
+        alert("Loading Error");
+        this.error.set('Failed to load tasks');
         this.loading.set(false);
       }
-    );
-  }
-
-  async addTask(task: TaskView) {
-    const user = this.authService.currentUser;
-    if (!user) throw new Error('User not authenticated');
-
-    await addDoc(collection(this.firestore, 'tasks'), {
-      title: task.title.trim(),
-      dueDate: task.dueDate,
-      status: task.status,
-      createdAt: Date.now(),
-      userId: user.uid
     });
   }
 
-  async updateTask(task: TaskView) {
-    const user = this.authService.currentUser;
-    if (!user) throw new Error('User not authenticated');
-    if (!task.id) throw new Error('Task ID is required');
+  /* -------------------------
+   * Mutations (NO TaskView)
+   * ------------------------- */
 
-    const taskRef = doc(this.firestore, 'tasks', task.id);
-    const snap = await getDoc(taskRef);
-
-    if (!snap.exists()) throw new Error('Task not found');
-    if (snap.data()['userId'] !== user.uid)
-      throw new Error('Unauthorized edit attempt');
-
-    await updateDoc(taskRef, {
-      title: task.title.trim(),
-      dueDate: task.dueDate,
-      status: task.status
+  addTask(payload: Pick<Task, 'title' | 'dueDate' | 'status' | 'priority' | 'assignedTo'>) {
+    return this.http.post<Task>(this.API_URL, payload).subscribe({
+      next: createdTask => {
+        this.tasks.update(tasks => [...tasks, createdTask]);
+      }
     });
   }
 
-  async deleteTask(taskId: string) {
-    const user = this.authService.currentUser;
+  updateTask(taskId: string, payload: Partial<Task>) {
+    return this.http.put<Task>(`${this.API_URL}/${taskId}`, payload).subscribe({
+      next: updatedTask => {
+        this.tasks.update(tasks =>
+          tasks.map(t => t.id === updatedTask.id ? updatedTask : t)
+        );
+      }
+    });
+  }
 
-    if (!user) {
-      throw new Error('User not authenticated');
-    }
+  deleteTask(taskId: string) {
+    return this.http.delete<void>(`${this.API_URL}/${taskId}`).subscribe({
+      next: () => {
+        this.tasks.update(tasks =>
+          tasks.filter(t => t.id !== taskId)
+        );
+      }
+    });
+  }
 
-    const taskRef = doc(this.firestore, 'tasks', taskId);
-    const snap = await getDoc(taskRef);
-
-    if (!snap.exists()) {
-      throw new Error('Task not found');
-    }
-
-    if (snap.data()['userId'] !== user.uid) {
-      throw new Error('Unauthorized delete attempt');
-    }
-
-    await deleteDoc(taskRef);
+  /* -------------------------
+   * Manual sync
+   * ------------------------- */
+  refresh() {
+    this.fetchTasks();
   }
 }

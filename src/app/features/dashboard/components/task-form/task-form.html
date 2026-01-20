@@ -1,26 +1,18 @@
 <div class="px-5 sm:px-8 pt-8 pb-4 text-center">
-    <p class="text-xl sm:text-2xl font-semibold tracking-tight" [ngClass]="{
-      'text-black': dialogTitleColor === 'text-primary',
-      'text-yellow-500': dialogTitleColor === 'text-warn',
-      'text-red-600': dialogTitleColor === 'text-danger'
-    }">
-        {{ dialogTitle }} Task
-    </p>
-
-    <p class="text-xs sm:text-sm text-gray-500 mt-1">
-        {{ dialogDescription }}
-    </p>
+    <p class="text-xl sm:text-2xl font-semibold tracking-tight"
+        [ngClass]="{ 'text-black': dialogTitleColor === 'text-primary', 'text-yellow-500': dialogTitleColor === 'text-warn', 'text-red-600': dialogTitleColor === 'text-danger' }">
+        {{ dialogTitle }} Task </p>
+    <p class="text-xs sm:text-sm text-gray-500 mt-1"> {{ dialogDescription }} </p>
 </div>
 
 <form [formGroup]="form" (ngSubmit)="submitForm.emit()" class="px-5 sm:px-8 pb-8">
+
+    <!-- TITLE -->
     <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-3
               focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
         <i class="bx bx-edit text-gray-400"></i>
-        <input type="text" formControlName="title" class="w-full outline-none text-sm placeholder-gray-400"
-            placeholder="Task Name" [ngClass]="{
-        'cursor-not-allowed': isDeleting,
-        'cursor-auto': !isDeleting
-      }" />
+        <input type="text" formControlName="title" placeholder="Task Name"
+            class="w-full outline-none text-sm placeholder-gray-400" />
     </div>
 
     @if(form.controls['title'].touched && form.controls['title'].invalid) {
@@ -29,37 +21,54 @@
     </p>
     }
 
+    <!-- DUE DATE -->
     <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
               focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
         <i class="bx bx-calendar text-gray-400"></i>
-        <input type="date" formControlName="dueDate" class="w-full outline-none text-sm" [ngClass]="{
-        'cursor-not-allowed': isDeleting,
-        'cursor-auto': !isDeleting
-      }" />
+        <input type="date" formControlName="dueDate" class="w-full outline-none text-sm" />
     </div>
 
-    @if(form.controls['dueDate'].touched && form.controls['dueDate'].invalid) {
-    <p class="text-red-500 text-xs mt-1">
-        Due date is required
-    </p>
-    }
-
+    <!-- STATUS -->
     <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
               focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
         <i class="bx bx-flag text-gray-400"></i>
-        <select formControlName="status" class="w-full outline-none text-sm bg-transparent" [ngClass]="{
-        'cursor-auto': !isDeleting,
-        'cursor-not-allowed': isDeleting
-      }">
-            <option value="Incomplete">Incomplete</option>
-            <option value="Completed">Completed</option>
-            <option value="InProgress">In Progress</option>
+        <select formControlName="status" class="w-full outline-none text-sm bg-transparent">
+            <option value="INCOMPLETE">Incomplete</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="COMPLETED">Completed</option>
         </select>
     </div>
 
+    <!-- PRIORITY -->
+    <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
+              focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
+        <i class="bx bx-error-circle text-gray-400"></i>
+        <select formControlName="priority" class="w-full outline-none text-sm bg-transparent">
+            <option value="HIGH">High</option>
+            <option value="NORMAL">Normal</option>
+            <option value="LOW">Low</option>
+        </select>
+    </div>
+
+    <!-- ASSIGNED TO -->
+    <div class="border border-gray-300 rounded-xl px-3 py-2 my-4
+              focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
+        <div class="flex items-center gap-2 mb-1">
+            <i class="bx bx-user-plus text-gray-400"></i>
+            <span class="text-sm text-gray-600">Assign Users</span>
+        </div>
+
+        <select formControlName="assignedTo" multiple class="w-full outline-none text-sm bg-transparent">
+            <option *ngFor="let user of users()" [value]="user.id">
+                {{ user.name }}
+            </option>
+        </select>
+    </div>
+
+    <!-- ACTION BUTTONS -->
     <div class="mt-8 flex flex-col sm:flex-row gap-3">
         <button type="button" (click)="cancel.emit()"
-            class="w-full py-3 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-200 cursor-pointer">
+            class="w-full py-3 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition">
             Cancel
         </button>
 

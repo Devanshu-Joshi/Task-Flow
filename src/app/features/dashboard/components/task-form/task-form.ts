@@ -1,6 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { UserService } from '@core/services/user';
+import { UserModel } from '@core/models/User';
 
 @Component({
   selector: 'app-task-form',
@@ -19,4 +21,18 @@ export class TaskForm {
 
   @Output() submitForm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
+
+  users = signal<UserModel[]>([]);
+
+  constructor(private userService: UserService) { }
+
+  loadUsers() {
+    this.userService.getAllUsers().subscribe({
+      next: (data) => {
+        this.users.set(data);
+        console.log(this.users());
+      },
+      error: (err) => console.error(err)
+    });
+  }
 }

@@ -36,6 +36,7 @@ export class Signup {
 
   constructor(private fb: FormBuilder, private authService: UserAuth, private router: Router, private toastr: ToastrService) {
     this.signupForm = this.fb.nonNullable.group({
+      username: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator]],
       cpassword: ['', [Validators.required]]
@@ -85,10 +86,10 @@ export class Signup {
       return;
     }
 
-    const { email, password } = this.signupForm.getRawValue();
+    const { username: name, email, password } = this.signupForm.getRawValue();
 
     this.authService
-      .register({ email, password, parentId: -1 })
+      .register({ name, email, password, parentId: -1 })
       .subscribe({
         next: message => {
           this.toastr.success(message || 'Registration successful', 'Success');
@@ -113,6 +114,9 @@ export class Signup {
     }, 400);
   }
 
+  get username() {
+    return this.signupForm.get('username');
+  }
 
   get email() {
     return this.signupForm.get('email');
