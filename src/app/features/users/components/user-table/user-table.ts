@@ -2,6 +2,8 @@ import {
   Component,
   computed,
   inject,
+  input,
+  Input,
   model,
   Signal,
   signal
@@ -26,6 +28,7 @@ import dayjs from 'dayjs';
 import { EmptyState } from '../empty-state/empty-state';
 
 import { NgxPaginationModule } from 'ngx-pagination';
+import { UserModel } from '@core/models/User';
 
 @Component({
   selector: 'app-user-table',
@@ -48,6 +51,7 @@ export class UserTable {
   /* -------------------------------------------------------------------------- */
 
   fb = inject(FormBuilder);
+  users = input<UserModel[]>([]);
 
   /* -------------------------------------------------------------------------- */
   /*                               Form Controls                                */

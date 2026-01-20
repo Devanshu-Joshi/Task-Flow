@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { UserService } from '@core/services/user';
 import { UserTable } from '@features/users/components/user-table/user-table';
+import { UserModel } from '@core/models/User';
 
 @Component({
   selector: 'app-user',
@@ -8,19 +10,24 @@ import { UserTable } from '@features/users/components/user-table/user-table';
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
-export class User {
+export class User implements OnInit {
 
-  constructor(private http: HttpClient) { }
+  users = signal<UserModel[]>([]);
 
-  btnClick() {
-    const data = {
-      email: 'test@example.com',
-      password: 'password123A@'
-    };
+  constructor(private http: HttpClient, private userService: UserService) { }
 
-    this.http.post('http://localhost:5000/api/auth/login', data)
-      .subscribe(response => {
-        console.log(response);
-      });
+  ngOnInit(): void {
+    this.loadUsers();
   }
+
+  loadUsers() {
+    this.userService.getAllUsers().subscribe({
+      next: (data) => {
+        this.users.set(data);
+        console.log(this.users);
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
 }

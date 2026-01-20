@@ -58,8 +58,7 @@ export class UserAuth {
   }
 
   // 🔹 Register
-  register(payload: { email: string; password: string, parentId: number }) {
-    console.log("Entered");
+  register(payload: { email: string; password: string, parent_id: number }) {
     return this.http
       .post<string>(`${this.apiUrl}/signup`, payload, { responseType: 'text' as 'json' });
   }
