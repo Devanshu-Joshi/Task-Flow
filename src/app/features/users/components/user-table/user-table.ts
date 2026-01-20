@@ -29,6 +29,7 @@ import { EmptyState } from '../empty-state/empty-state';
 
 import { NgxPaginationModule } from 'ngx-pagination';
 import { UserModel } from '@core/models/User';
+import { PermissionKey } from '@core/models/PermissionKey';
 
 @Component({
   selector: 'app-user-table',
@@ -45,6 +46,12 @@ import { UserModel } from '@core/models/User';
   styleUrl: './user-table.css',
 })
 export class UserTable {
+  deleteUser(arg0: string) {
+    throw new Error('Method not implemented.');
+  }
+  editUser(_t93: UserModel) {
+    throw new Error('Method not implemented.');
+  }
 
   /* -------------------------------------------------------------------------- */
   /*                                 Injections                                 */
@@ -110,11 +117,36 @@ export class UserTable {
   ];
 
   permissions: PermissionItem[] = [
-    { key: 'view', label: 'View', group: 'ALL' },
-    { key: 'create', label: 'Create', group: 'ALL' },
-    { key: 'edit', label: 'Edit', group: 'ALL' },
-    { key: 'delete', label: 'Delete', group: 'ALL' },
-    { key: 'manageUsers', label: 'Manage Users', group: 'ALL' }
+    {
+      key: PermissionKey.TASK_VIEW,
+      label: 'View Tasks',
+      group: 'Task Management',
+      description: 'Allows viewing tasks'
+    },
+    {
+      key: PermissionKey.TASK_CREATE,
+      label: 'Create Tasks',
+      group: 'Task Management',
+      description: 'Allows creating new tasks'
+    },
+    {
+      key: PermissionKey.TASK_EDIT,
+      label: 'Edit Tasks',
+      group: 'Task Management',
+      description: 'Allows editing existing tasks'
+    },
+    {
+      key: PermissionKey.TASK_DELETE,
+      label: 'Delete Tasks',
+      group: 'Task Management',
+      description: 'Allows deleting tasks'
+    },
+    {
+      key: PermissionKey.MANAGE_USER,
+      label: 'Manage Users',
+      group: 'User Management',
+      description: 'Allows managing users and their permissions'
+    }
   ];
 
   selectedPermissions: string[] = [];

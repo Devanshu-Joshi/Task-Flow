@@ -5,6 +5,6 @@ export interface UserModel {
     avatar: string;
     email: string;
     password: string;
-    parent_id: string;
+    parentId: string;
     permissions: []
 }

@@ -1,5 +1,8 @@
+import { PermissionKey } from "./PermissionKey";
+
 export interface PermissionItem {
-    key: string;
+    key: PermissionKey;
     label: string;
-    group: 'ALL';
+    group: string;
+    description: string;
 }

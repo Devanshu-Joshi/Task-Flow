@@ -88,7 +88,7 @@ export class Signup {
     const { email, password } = this.signupForm.getRawValue();
 
     this.authService
-      .register({ email, password, parent_id: -1 })
+      .register({ email, password, parentId: -1 })
       .subscribe({
         next: message => {
           this.toastr.success(message || 'Registration successful', 'Success');

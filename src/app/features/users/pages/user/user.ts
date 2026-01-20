@@ -24,7 +24,7 @@ export class User implements OnInit {
     this.userService.getAllUsers().subscribe({
       next: (data) => {
         this.users.set(data);
-        console.log(this.users);
+        console.log(this.users());
       },
       error: (err) => console.error(err)
     });

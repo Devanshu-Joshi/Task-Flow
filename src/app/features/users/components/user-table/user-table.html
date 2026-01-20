@@ -133,64 +133,85 @@
                 class="w-full min-w-160 md:min-w-180 text-xs sm:text-sm text-left border-collapse table-auto sm:table-fixed">
                 <thead class="bg-gray-50 text-gray-600 uppercase text-[10px] sm:text-xs sticky top-0 z-10">
                     <tr>
-                        <th class="px-1.5 sm:px-4 py-2 sm:py-3 cursor-pointer w-10 sm:w-16 select-none"
-                            (click)="sortBy('createdAt')">
-                            <span class="inline-flex items-center gap-1">
-                                S.No
-                                <i class="bx" [ngClass]="{
-            'bx-caret-up': sortField() === 'createdAt' && sortDirection() === 'asc',
-            'bx-caret-down': sortField() === 'createdAt' && sortDirection() === 'desc'
-          }"></i>
-                            </span>
-                        </th>
+                        <th class="px-4 py-3 w-12 text-center">S.No</th>
 
-                        <th class="px-1.5 sm:px-4 py-2 sm:py-3 w-max text-center cursor-pointer select-none"
-                            (click)="sortBy('title')">
-                            <span class="inline-flex items-center justify-center gap-2">
-                                <span>User</span>
+                        <th class="px-4 py-3 text-left">User</th>
 
-                                <span class="flex flex-col text-xs leading-none">
-                                    <i class="bx bx-caret-up" [ngClass]="{
-              'text-gray-400': sortField() !== 'title' || sortDirection() === 'desc',
-              'text-gray-800': sortField() === 'title' && sortDirection() === 'asc'
-            }"></i>
+                        <th class="px-4 py-3 text-center">Created Date</th>
 
-                                    <i class="bx bx-caret-down -mt-1" [ngClass]="{
-              'text-gray-400': sortField() !== 'title' || sortDirection() === 'asc',
-              'text-gray-800': sortField() === 'title' && sortDirection() === 'desc'
-            }"></i>
-                                </span>
-                            </span>
-                        </th>
+                        <th class="px-4 py-3 text-center">Permissions</th>
 
-                        <th class="px-1.5 sm:px-4 py-2 sm:py-3 font-semibold w-24 sm:w-32 text-center">Created Date</th>
-                        <th class="px-1.5 sm:px-4 py-2 sm:py-3 font-semibold w-24 sm:w-32 text-center">Permissions</th>
-                        <th class="px-1.5 sm:px-4 py-2 sm:py-3 font-semibold w-28 sm:w-40 text-center">Action</th>
+                        <th class="px-4 py-3 text-center">Action</th>
                     </tr>
                 </thead>
 
                 <tbody class="divide-y divide-gray-200">
                     @for (
-                    item of (users() | paginate: { itemsPerPage: itemsPerPage, currentPage: p });
-                    let index = $index;
-                    track item.id
+                    user of (users() | paginate: { itemsPerPage: itemsPerPage, currentPage: p });
+                    let i = $index;
+                    track user.id
                     ) {
                     <tr>
-                        <!-- User Table Row -->
-                        <td class="px-1.5 sm:px-4 py-2 sm:py-3 font-medium">
-                            {{ item.name }}
+
+                        <!-- S.No -->
+                        <td class="px-4 py-3 text-center font-medium">
+                            {{ (p - 1) * itemsPerPage + i + 1 }}
                         </td>
 
-                        <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center font-medium text-gray-800">
-                            <span class="block truncate max-w-45 sm:max-w-none mx-auto">
-                                {{ item.email }}
-                            </span>
+                        <!-- User Info -->
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-3">
+                                <img [src]="user.avatar || 'assets/avatar-placeholder.png'"
+                                    class="w-9 h-9 rounded-full object-cover" alt="avatar" />
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-gray-800 truncate">
+                                        {{ user.name }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        {{ user.email }}
+                                    </p>
+                                </div>
+                            </div>
                         </td>
+
+                        <!-- Created Date -->
+                        <td class="px-4 py-3 text-center text-sm text-gray-700">
+                            {{ user.createdAt | date:'dd MMM yyyy' }}
+                        </td>
+
+                        <!-- Permissions -->
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex flex-wrap gap-1 justify-center">
+                                @if (user.permissions.length) {
+                                @for (perm of user.permissions; track perm) {
+                                <span class="px-2 py-0.5 text-xs rounded-full bg-indigo-100 text-indigo-700">
+                                    {{ perm }}
+                                </span>
+                                }
+                                } @else {
+                                <span class="text-xs text-gray-400">No permissions</span>
+                                }
+                            </div>
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="px-4 py-3 text-center">
+                            <div class="flex justify-center gap-2">
+                                <button class="text-blue-600 hover:text-blue-800" (click)="editUser(user)">
+                                    <i class="bx bx-edit"></i>
+                                </button>
+
+                                <button class="text-red-600 hover:text-red-800" (click)="deleteUser(user.id)">
+                                    <i class="bx bx-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+
                     </tr>
                     }
                     @empty {
                     <tr>
-                        <td colspan="5" class="p-4 sm:p-6">
+                        <td colspan="5" class="p-6">
                             <app-empty-state></app-empty-state>
                         </td>
                     </tr>
