@@ -3,6 +3,8 @@
         <p class="text-3xl text-purple-700 font-bold">User Management</p>
     </div>
     <div>
-        <app-user-table [users]="users()" (userDeleted)="loadUsers()"></app-user-table>
+        <app-user-table [users]="users()" (userDeleted)="loadUsers()" (sidebarOpen)="openSideBar()"></app-user-table>
     </div>
 </div>
+
+<app-sidebar #sidebar (userAdded)="loadUsers()"></app-sidebar>

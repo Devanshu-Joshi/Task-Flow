@@ -58,6 +58,7 @@ export class UserTable {
   constructor(private userService: UserService, private toastr: ToastrService) { }
 
   @Output() userDeleted = new EventEmitter<void>();
+  @Output() sidebarOpen = new EventEmitter<boolean>();
 
   deleteUser(id: string) {
     this.userService.deleteUser(id).subscribe({
@@ -139,31 +140,31 @@ export class UserTable {
     {
       key: PermissionKey.TASK_VIEW,
       label: 'View Tasks',
-      group: 'Task Management',
+      group: 'Management',
       description: 'Allows viewing tasks'
     },
     {
       key: PermissionKey.TASK_CREATE,
       label: 'Create Tasks',
-      group: 'Task Management',
+      group: 'Management',
       description: 'Allows creating new tasks'
     },
     {
       key: PermissionKey.TASK_EDIT,
       label: 'Edit Tasks',
-      group: 'Task Management',
+      group: 'Management',
       description: 'Allows editing existing tasks'
     },
     {
       key: PermissionKey.TASK_DELETE,
       label: 'Delete Tasks',
-      group: 'Task Management',
+      group: 'Management',
       description: 'Allows deleting tasks'
     },
     {
       key: PermissionKey.MANAGE_USER,
       label: 'Manage Users',
-      group: 'User Management',
+      group: 'Management',
       description: 'Allows managing users and their permissions'
     }
   ];
@@ -311,12 +312,6 @@ export class UserTable {
 
   isDialogClosed: boolean = true;
 
-  @ViewChild('sidebar') sidebar!: Sidebar;
-
-  openSideBar() {
-    this.sidebar.openSidebar();
-  }
-
   resetForm(): void {
     this.taskForm.reset({
       title: '',
@@ -325,6 +320,10 @@ export class UserTable {
     });
 
     this.taskForm.enable();
+  }
+
+  openSideBar() {
+    this.sidebarOpen.emit(true);
   }
 
 }

@@ -1,55 +1,81 @@
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { trigger, transition, style, animate } from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { PermissionItem } from '@core/models/PermissionItem';
+import { PermissionKey } from '@core/models/PermissionKey';
+import { UserService } from '@core/services/user';
+import { UserModel } from '@core/models/User';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-sidebar',
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
-  animations: [
-    trigger('slideSidebar', [
-      transition(':enter', [
-        style({ transform: 'translateX(100%)' }),
-        animate('350ms cubic-bezier(0.4, 0, 0.2, 1)', style({ transform: 'translateX(0)' })),
-      ]),
-      transition(':leave', [
-        animate('250ms ease-in', style({ transform: 'translateX(100%)' })),
-      ]),
-    ]),
-    trigger('fadeBackdrop', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('250ms ease-out', style({ opacity: 1 })),
-      ]),
-      transition(':leave', [
-        animate('200ms ease-in', style({ opacity: 0 })),
-      ]),
-    ]),
-  ],
 })
-export class Sidebar {
+export class Sidebar implements AfterViewInit {
   isOpen = false;
 
   fb = inject(FormBuilder);
+  PermissionKey = PermissionKey;
 
-  permissionList = [
-    { key: 'TASK_VIEW', label: 'Task View' },
-    { key: 'TASK_CREATE', label: 'Task Create' },
-    { key: 'TASK_EDIT', label: 'Task Edit' },
-    { key: 'TASK_DELETE', label: 'Task Delete' },
-    { key: 'MANAGE_USER', label: 'Manage Users' },
+  @Output() userAdded = new EventEmitter<void>();
+
+  permissionList: PermissionItem[] = [
+    {
+      key: PermissionKey.TASK_VIEW,
+      label: 'Task View',
+      group: 'Task',
+      description: 'Allows viewing tasks',
+    },
+    {
+      key: PermissionKey.TASK_CREATE,
+      label: 'Task Create',
+      group: 'Task',
+      description: 'Allows creating tasks',
+    },
+    {
+      key: PermissionKey.TASK_EDIT,
+      label: 'Task Edit',
+      group: 'Task',
+      description: 'Allows editing tasks',
+    },
+    {
+      key: PermissionKey.TASK_DELETE,
+      label: 'Task Delete',
+      group: 'Task',
+      description: 'Allows deleting tasks',
+    },
+    {
+      key: PermissionKey.MANAGE_USER,
+      label: 'Manage Users',
+      group: 'User',
+      description: 'Allows managing users',
+    },
   ];
 
   userForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    permissions: this.fb.array(this.permissionList.map(() => false)),
+    permissions: this.fb.array(this.permissionList.map((perm => this.fb.control(perm.key === PermissionKey.TASK_VIEW, [])))),
   });
 
-  constructor() { }
+  constructor(private userService: UserService, private toastr: ToastrService) { }
+
+  ngAfterViewInit() {
+    const permissionsArray = this.userForm.get('permissions') as FormArray;
+
+    permissionsArray.valueChanges.subscribe(() => {
+      const taskViewIndex = this.permissionList.findIndex(
+        p => p.key === PermissionKey.TASK_VIEW
+      );
+
+      if (taskViewIndex !== -1) {
+        permissionsArray.at(taskViewIndex).setValue(true, { emitEvent: false });
+      }
+    });
+  }
 
   get permissionsArray(): FormArray {
     return this.userForm.get('permissions') as FormArray;
@@ -75,20 +101,43 @@ export class Sidebar {
       permissions: selectedPermissions,
     };
 
-    console.log('Glass User Payload:', payload);
+    this.userService.addUser(payload as UserModel).subscribe({
+      next: (result) => {
+        console.log("Get User = " + result);
+        this.toastr.success("User added successfully", "Action Completed");
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    })
 
+    this.userAdded.emit();
     this.closeSidebar();
   }
 
   get allPermissionsEnabled(): boolean {
-    return this.permissionsArray.controls.every(ctrl => ctrl.value === true);
+    const permissionsArray = this.userForm.get('permissions') as FormArray;
+
+    return permissionsArray.controls.every((control, index) => {
+      const perm = this.permissionList[index];
+      return perm.key === PermissionKey.TASK_VIEW || control.value === true;
+    });
   }
 
-  toggleAllPermissions() {
-    const shouldEnableAll = !this.allPermissionsEnabled;
+  toggleAllPermissions(): void {
+    const permissionsArray = this.userForm.get('permissions') as FormArray;
 
-    this.permissionsArray.controls.forEach(control => {
-      control.setValue(shouldEnableAll);
+    const enable = !this.allPermissionsEnabled;
+
+    permissionsArray.controls.forEach((control, index) => {
+      const perm = this.permissionList[index];
+
+      if (perm.key === PermissionKey.TASK_VIEW) {
+        control.setValue(true); // 🔒 force ON
+        return;
+      }
+
+      control.setValue(enable);
     });
   }
 

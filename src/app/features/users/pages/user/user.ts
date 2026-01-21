@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { UserService } from '@core/services/user';
 import { UserTable } from '@features/users/components/user-table/user-table';
 import { UserModel } from '@core/models/User';
@@ -29,6 +29,12 @@ export class User implements OnInit {
       },
       error: (err) => console.error(err)
     });
+  }
+
+  @ViewChild('sidebar') sidebar!: Sidebar;
+
+  openSideBar() {
+    this.sidebar.openSidebar();
   }
 
 }
