@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
-import { UserAuth } from '@core/services/user-auth';
+import { UserAuth } from '@core/services/user-auth/user-auth';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 
 @Component({

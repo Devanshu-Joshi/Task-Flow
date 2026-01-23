@@ -3,6 +3,8 @@ import {
   computed,
   EventEmitter,
   inject,
+  DestroyRef,
+  Input,
   input,
   model,
   Output,
@@ -26,10 +28,12 @@ import dayjs from 'dayjs';
 import { EmptyState } from '@shared/components/empty-state/empty-state';
 
 import { NgxPaginationModule } from 'ngx-pagination';
-import { UserModel } from '@core/models/User';
+import { UserModel } from '@core/models/UserModel';
 import { PermissionKey } from '@core/models/PermissionKey';
-import { UserService } from '@core/services/user';
+import { UserService } from '@core/services/user/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user-table',
@@ -72,7 +76,9 @@ export class UserTable {
   /* -------------------------------------------------------------------------- */
 
   fb = inject(FormBuilder);
-  users = input<UserModel[]>([]);
+  private destroyRef = inject(DestroyRef);
+  @Input() users$!: Observable<UserModel[]>;
+  users = signal<UserModel[]>([]);
 
   /* -------------------------------------------------------------------------- */
   /*                               Form Controls                                */
@@ -171,6 +177,15 @@ export class UserTable {
     this.searchControl.valueChanges.subscribe(value => {
       this.searchTerm.set(value ?? '');
     });
+
+    this.users$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (users) => {
+          this.users.set(users);
+        },
+        error: (err) => console.error(err)
+      })
   }
 
   /* -------------------------------------------------------------------------- */

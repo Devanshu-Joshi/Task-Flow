@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { UserService } from '@core/services/user';
-import { UserModel } from '@core/models/User';
+import { UserService } from '@core/services/user/user.service';
+import { UserModel } from '@core/models/UserModel';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-task-form',
@@ -18,21 +19,10 @@ export class TaskForm {
   @Input() dialogTitleColor: 'text-primary' | 'text-warn' | 'text-danger' = 'text-primary';
   @Input() dialogSubmitText: string = 'Save';
   @Input() isDeleting: boolean = false;
+  @Input() users$!: Observable<UserModel[]>;
 
   @Output() submitForm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 
-  users = signal<UserModel[]>([]);
-
-  constructor(private userService: UserService) { }
-
-  loadUsers() {
-    this.userService.getUsersByParent().subscribe({
-      next: (data) => {
-        this.users.set(data);
-        console.log(this.users());
-      },
-      error: (err) => console.error(err)
-    });
-  }
+  constructor() { }
 }

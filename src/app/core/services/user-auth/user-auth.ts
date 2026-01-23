@@ -4,13 +4,13 @@ import { BehaviorSubject } from 'rxjs';
 import { tap, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from './user';
-import { UserModel } from '@core/models/User';
-import { TokenService } from './token-service';
+import { UserModel } from '@core/models/UserModel';
+import { TokenService } from '@core/services/token-service/token-service';
+import { PermissionKey } from '@core/models/PermissionKey';
 
 interface LoginResponse {
   token: string;
-  user?: any; // optional user payload
+  user?: any;
 }
 
 interface RegisterResponse {
@@ -23,24 +23,22 @@ export class UserAuth {
 
   private apiUrl = 'http://localhost:3080/api/auth';
 
-  // Signals (for components)
   user = signal<UserModel | null>(null);
   isLoggedIn = signal<boolean>(false);
 
-  // RxJS (for guards/interceptors)
   private authReadySubject = new BehaviorSubject<boolean>(false);
   authReady$ = this.authReadySubject.asObservable();
+  private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService, private userService: UserService, private tokenService: TokenService) {
+  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService, private tokenService: TokenService) {
     this.initAuth();
 
-    // 🔔 React to token cleared (e.g. 401)
     this.tokenService.tokenCleared$.subscribe(() => {
       this.handleForcedLogout();
     });
   }
 
-  // 🔹 Runs once on app startup
   private initAuth() {
     const token = this.tokenService.getToken();
 
@@ -50,7 +48,7 @@ export class UserAuth {
         .pipe(finalize(() => this.authReadySubject.next(true)))
         .subscribe(user => {
           this.user.set(user);
-          this.userService.setCurrentUser(user);
+          this.setCurrentUser(user);
           this.isLoggedIn.set(true);
         });
 
@@ -60,7 +58,6 @@ export class UserAuth {
     }
   }
 
-  // 🔹 Login
   login(credentials: { email: string; password: string }) {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(res => {
@@ -69,13 +66,12 @@ export class UserAuth {
 
         this.getMe().subscribe(user => {
           this.user.set(user);
-          this.userService.setCurrentUser(user);
+          this.setCurrentUser(user);
         });
       })
     );
   }
 
-  // 🔹 Register
   register(payload: { name: string, email: string; password: string, parentId: number }) {
     return this.http
       .post<string>(`${this.apiUrl}/signup`, payload, { responseType: 'text' as 'json' });
@@ -92,12 +88,11 @@ export class UserAuth {
       )
       .subscribe(user => {
         this.user.set(user);
-        this.userService.setCurrentUser(user);
+        this.setCurrentUser(user);
         this.isLoggedIn.set(true);
       });
   }
 
-  // 🔹 Logout
   logout() {
     this.clearAuth();
     this.user.set(null);
@@ -107,7 +102,7 @@ export class UserAuth {
   }
 
   private handleForcedLogout() {
-    this.userService.setCurrentUser(null as any);
+    this.setCurrentUser(null as any);
     this.user.set(null);
     this.isLoggedIn.set(false);
     this.router.navigate(['/login']);
@@ -115,7 +110,7 @@ export class UserAuth {
   }
 
   private clearAuth() {
-    this.userService.setCurrentUser(null as any);
+    this.setCurrentUser(null as any);
     localStorage.removeItem('token');
     this.user.set(null);
     this.isLoggedIn.set(false);
@@ -138,5 +133,17 @@ export class UserAuth {
     const payload = this.decodeToken(token);
     if (!payload?.exp) return true;
     return payload.exp * 1000 < Date.now();
+  }
+
+  hasPermission(permission: PermissionKey): boolean {
+    return this.currentUserSubject.value?.permissions?.includes(permission) ?? false;
+  }
+
+  get currentUser(): UserModel | null {
+    return this.currentUserSubject.value;
+  }
+
+  setCurrentUser(user: UserModel): void {
+    this.currentUserSubject.next(user);
   }
 }

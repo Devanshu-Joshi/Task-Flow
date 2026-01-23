@@ -3,11 +3,12 @@ import { FormBuilder, FormArray, Validators, FormsModule, ReactiveFormsModule } 
 import { CommonModule } from '@angular/common';
 import { PermissionItem } from '@core/models/PermissionItem';
 import { PermissionKey } from '@core/models/PermissionKey';
-import { UserService } from '@core/services/user';
-import { UserModel } from '@core/models/User';
+import { UserService } from '@core/services/user/user.service';
+import { UserModel } from '@core/models/UserModel';
 import { ToastrService } from 'ngx-toastr';
-import { map, Subject, takeUntil } from 'rxjs';
+import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
+import { UserAuth } from '@core/services/user-auth/user-auth';
 
 export type UserSidebarMode = 'add' | 'edit' | 'view' | 'delete';
 
@@ -25,8 +26,6 @@ export class Sidebar implements AfterViewInit {
 
   fb = inject(FormBuilder);
   PermissionKey = PermissionKey;
-
-  @Output() userActionPerformed = new EventEmitter<void>();
 
   permissionList: PermissionItem[] = [
     {
@@ -77,14 +76,13 @@ export class Sidebar implements AfterViewInit {
     ),
   });
 
-  userService = inject(UserService);
+  canManageUsers$: Observable<boolean>;
 
-  constructor(private toastr: ToastrService) {
+  constructor(private toastr: ToastrService, private userAuth: UserAuth, private userService: UserService) {
+    this.canManageUsers$ = this.userAuth.currentUser$.pipe(
+      map(user => user?.permissions?.includes(PermissionKey.MANAGE_USER) ?? false)
+    );
   }
-
-  canManageUsers$ = this.userService.currentUser$.pipe(
-    map(user => user?.permissions?.includes(PermissionKey.MANAGE_USER) ?? false)
-  );
 
   private destroy$ = new Subject<void>();
 
@@ -103,7 +101,7 @@ export class Sidebar implements AfterViewInit {
         }
       });
 
-    this.userService.currentUser$
+    this.userAuth.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
         const canManage = user?.permissions?.includes(PermissionKey.MANAGE_USER);
@@ -305,7 +303,6 @@ export class Sidebar implements AfterViewInit {
     this.userService.addUser(payload).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.userActionPerformed.emit();
         this.toastr.success('User added successfully', 'Action Completed');
       },
       error: (err) => {
@@ -341,10 +338,9 @@ export class Sidebar implements AfterViewInit {
     this.userService.updateUser(payload).subscribe({
       next: (updatedUser) => {
         this.isLoading.set(false);
-        if (updatedUser.id === this.userService.currentUser?.id) {
-          this.userService.setCurrentUser(updatedUser);
+        if (updatedUser.id === this.userAuth.currentUser?.id) {
+          this.userAuth.setCurrentUser(updatedUser);
         }
-        this.userActionPerformed.emit();
         this.toastr.success('User Updated Successfully', 'Action Performed');
       },
       error: (err) => {
@@ -365,7 +361,6 @@ export class Sidebar implements AfterViewInit {
     this.userService.deleteUser(id).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.userActionPerformed.emit();
         this.toastr.success("User Deleted Successfully", "Action Confirmed")
       },
       error: (err) => {
@@ -388,7 +383,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   get canManageUsers(): boolean {
-    return this.userService.hasPermission(PermissionKey.MANAGE_USER);
+    return this.userAuth.hasPermission(PermissionKey.MANAGE_USER);
   }
 
   toggleAllPermissions(): void {
@@ -409,7 +404,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   private showNoPermission(): void {
-    console.log(this.userService.currentUser);
+    console.log(this.userAuth.currentUser);
     this.toastr.error(
       'You have no permission for this task',
       'Access Denied'

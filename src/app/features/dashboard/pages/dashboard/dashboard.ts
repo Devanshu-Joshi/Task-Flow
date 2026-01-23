@@ -1,9 +1,9 @@
-import { Component, effect, inject, OnInit, Signal, ViewChild } from '@angular/core';
+import { Component, effect, inject, DestroyRef, OnInit, Signal, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { TaskService } from '@core/services/task';
+import { TaskService } from '@core/services/task/task.service';
 import { signal, computed } from '@angular/core';
 import { Task, TaskView } from '@core/models/Task';
-import { debounceTime } from 'rxjs';
+import { debounceTime, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import dayjs from 'dayjs';
@@ -17,6 +17,9 @@ import { TaskTable } from '@features/dashboard/components/task-table/task-table'
 import { TaskDialog } from '@features/dashboard/components/task-dialog/task-dialog';
 import { TaskForm } from '@features/dashboard/components/task-form/task-form';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
+import { UserService } from '@core/services/user/user.service';
+import { UserModel } from '@core/models/UserModel';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
 @Component({
@@ -56,6 +59,7 @@ export class Dashboard implements OnInit {
   }
 
   fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
   dateRange = signal<{ startDate: any; endDate: any } | null>(null);
   selectedStatus = signal<string | null>(null); // '' means All
   tasks!: Signal<TaskView[]>;
@@ -85,8 +89,10 @@ export class Dashboard implements OnInit {
     { label: 'Incomplete', value: 'INCOMPLETE' }
   ];
   isLoading = computed(() => this.taskService.loading());
+  users = signal<UserModel[]>([]);
+  users$!: Observable<UserModel[]>;
 
-  constructor(public taskService: TaskService, private toastr: ToastrService) {
+  constructor(public taskService: TaskService, private toastr: ToastrService, private userService: UserService) {
     this.tasks = this.taskService.tasksView;
   }
 
@@ -103,10 +109,24 @@ export class Dashboard implements OnInit {
       .subscribe(value => {
         this.searchTerm.set(value || '');
       });
+
+    this.users$ = this.userService.getUsersByParent();
+    this.users$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (users) => {
+          this.users.set(users);
+        },
+        error: (err) => console.error(err)
+      })
   }
 
   ngOnDestroy() {
     document.body.classList.remove('body-lock');
+  }
+
+  refreshUserData() {
+    this.users$ = this.userService.getUsersByParent(true);
   }
 
   totalTasks = computed(() => this.tasks().length);
@@ -159,6 +179,8 @@ export class Dashboard implements OnInit {
   }
 
   filteredTasks = computed(() => {
+    const users = this.users();
+    if (!users || users.length === 0) { return []; }
     const term = this.searchTerm().toLowerCase();
     const status = this.selectedStatus();
     const range = this.dateRange();

@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserAuth } from '@core/services/user-auth';
+import { UserAuth } from '@core/services/user-auth/user-auth';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';

@@ -6,7 +6,6 @@ import { Subject } from 'rxjs';
 })
 export class TokenService {
 
-  // 🔔 Emits whenever the token is cleared (logout / 401)
   private tokenClearedSubject = new Subject<void>();
   tokenCleared$ = this.tokenClearedSubject.asObservable();
 
@@ -20,6 +19,6 @@ export class TokenService {
 
   clearToken(): void {
     localStorage.removeItem('token');
-    this.tokenClearedSubject.next(); // 🔥 notify listeners
+    this.tokenClearedSubject.next();
   }
 }

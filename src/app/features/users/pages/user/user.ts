@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
-import { UserService } from '@core/services/user';
+import { UserService } from '@core/services/user/user.service';
 import { UserTable } from '@features/users/components/user-table/user-table';
-import { UserModel } from '@core/models/User';
+import { UserModel } from '@core/models/UserModel';
 import { Sidebar } from '@features/users/components/sidebar/sidebar';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
-import { UserAuth } from '@core/services/user-auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -16,30 +16,14 @@ import { UserAuth } from '@core/services/user-auth';
 export class User implements OnInit {
 
   isLoading = signal<boolean>(false);
+  users$!: Observable<UserModel[]>;
 
-  users = signal<UserModel[]>([]);
-
-  constructor(private http: HttpClient, private userService: UserService, private userAuth: UserAuth) { }
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    this.loadUsers();
+    this.users$ = this.userService.getUsersByParent();
   }
 
-  loadUsers() {
-    this.userAuth.refreshCurrentUser();
-    this.isLoading.set(true);
-    this.userService.getUsersByParent().subscribe({
-      next: (data) => {
-        this.users.set(data);
-        console.log(this.users());
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error(err)
-        this.isLoading.set(false);
-      }
-    });
-  }
 
   @ViewChild('sidebar') sidebar!: Sidebar;
 

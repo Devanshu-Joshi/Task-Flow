@@ -1,19 +1,17 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Task, TaskView } from '@core/models/Task';
-import { UserAuth } from './user-auth';
+import { UserAuth } from '@core/services/user-auth/user-auth';
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
 
   private readonly API_URL = 'http://localhost:3080/api/tasks';
 
-  // ✅ Store RAW backend data only
   readonly tasks = signal<Task[]>([]);
   readonly loading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
-  // ✅ UI-only transformation
   readonly tasksView = computed<TaskView[]>(() =>
     [...this.tasks()]
       .sort((a, b) => a.createdAt - b.createdAt)

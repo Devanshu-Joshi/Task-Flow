@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserAuth } from '@core/services/user-auth';
+import { UserAuth } from '@core/services/user-auth/user-auth';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
