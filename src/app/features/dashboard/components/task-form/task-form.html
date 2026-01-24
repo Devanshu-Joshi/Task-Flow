@@ -55,19 +55,22 @@
 
     <!-- ASSIGNED TO -->
     <div class="border border-gray-300 rounded-xl px-3 py-2 my-4
-              focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
+         focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
+
         <div class="flex items-center gap-2 mb-1">
             <i class="bx bx-user-plus text-gray-400"></i>
             <span class="text-sm text-gray-600">Assign Users</span>
         </div>
 
-        <select formControlName="assignedTo" multiple class="w-full outline-none text-sm bg-transparent">
-            @for (user of users$ | async; track user.id) {
-            <option [value]="user.id">
-                {{ user.name }}
-            </option>
-            }
-        </select>
+        <ng-select formControlName="assignedTo" [items]="users$ | async" bindLabel="name" bindValue="id"
+            [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom" appendTo="body">
+
+            <!-- Optional: custom option template -->
+            <ng-template ng-option-tmp let-item="item">
+                <span>{{ item.name }}</span>
+            </ng-template>
+
+        </ng-select>
     </div>
 
     <!-- ACTION BUTTONS -->

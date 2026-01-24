@@ -4,10 +4,11 @@ import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { UserService } from '@core/services/user/user.service';
 import { UserModel } from '@core/models/UserModel';
 import { Observable } from 'rxjs';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-task-form',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectComponent],
   templateUrl: './task-form.html',
   styleUrl: './task-form.css',
 })

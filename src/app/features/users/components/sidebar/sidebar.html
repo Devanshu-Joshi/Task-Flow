@@ -113,27 +113,27 @@
 
             @if (mode === 'add') {
             <button type="button" (click)="addUser()" [disabled]="userForm.invalid" class="flex-1 rounded-xl px-4 py-2.5 transition
-         text-white" [class.bg-indigo-500]="(canManageUsers$ | async)"
-                [class.hover:bg-indigo-600]="(canManageUsers$ | async)" [class.bg-gray-400]="!(canManageUsers$ | async)"
-                [class.cursor-not-allowed]="!(canManageUsers$ | async)" [class.opacity-60]="!(canManageUsers$ | async)">
+         text-white" [class.bg-indigo-500]="(canManageUsers())" [class.hover:bg-indigo-600]="(canManageUsers())"
+                [class.bg-gray-400]="!(canManageUsers())" [class.cursor-not-allowed]="!(canManageUsers())"
+                [class.opacity-60]="!(canManageUsers())">
                 Add User
             </button>
             }
 
             @if (mode === 'edit') {
             <button type="button" (click)="updateUser()" [disabled]="userForm.invalid || userForm.pristine" class="flex-1 rounded-xl px-4 py-2.5 transition
-         text-white" [class.bg-indigo-500]="(canManageUsers$ | async)"
-                [class.hover:bg-indigo-600]="(canManageUsers$ | async)" [class.bg-gray-400]="!(canManageUsers$ | async)"
-                [class.cursor-not-allowed]="!(canManageUsers$ | async)" [class.opacity-60]="!(canManageUsers$ | async)">
+         text-white" [class.bg-indigo-500]="(canManageUsers())" [class.hover:bg-indigo-600]="(canManageUsers())"
+                [class.bg-gray-400]="!(canManageUsers())" [class.cursor-not-allowed]="!(canManageUsers())"
+                [class.opacity-60]="!(canManageUsers())">
                 Save Changes
             </button>
             }
 
             @if (mode === 'delete') {
             <button type="button" (click)="deleteUser(selectedUser?.id!)" class="flex-1 rounded-xl px-4 py-2.5 transition
-         text-white" [class.bg-red-500]="(canManageUsers$ | async)"
-                [class.hover:bg-red-600]="(canManageUsers$ | async)" [class.bg-gray-400]="!(canManageUsers$ | async)"
-                [class.cursor-not-allowed]="!(canManageUsers$ | async)" [class.opacity-60]="!(canManageUsers$ | async)">
+         text-white" [class.bg-red-500]="(canManageUsers())" [class.hover:bg-red-600]="(canManageUsers())"
+                [class.bg-gray-400]="!(canManageUsers())" [class.cursor-not-allowed]="!(canManageUsers())"
+                [class.opacity-60]="!(canManageUsers())">
                 Delete User
             </button>
             }
