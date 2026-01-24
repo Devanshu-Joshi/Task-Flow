@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, inject, Output, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PermissionItem } from '@core/models/PermissionItem';
@@ -6,7 +6,7 @@ import { PermissionKey } from '@core/models/PermissionKey';
 import { UserService } from '@core/services/user/user.service';
 import { UserModel } from '@core/models/UserModel';
 import { ToastrService } from 'ngx-toastr';
-import { map, Observable, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 import { UserAuth } from '@core/services/user-auth/user-auth';
 
@@ -26,6 +26,21 @@ export class Sidebar implements AfterViewInit {
 
   fb = inject(FormBuilder);
   PermissionKey = PermissionKey;
+
+  permissionEffect = effect(() => {
+    const user = this.userAuth.currentUserSignal();
+    const canManage = user?.permissions?.includes(PermissionKey.MANAGE_USER);
+
+    if (!canManage && this.isOpen) {
+      this.closeSidebar();
+      if (this.mode !== 'view') {
+        this.toastr.warning(
+          'Your permissions have changed',
+          'Access Updated'
+        );
+      }
+    }
+  });
 
   permissionList: PermissionItem[] = [
     {
@@ -76,12 +91,12 @@ export class Sidebar implements AfterViewInit {
     ),
   });
 
-  canManageUsers$: Observable<boolean>;
+  canManageUsers = computed(() =>
+    this.userAuth.currentUserSignal()
+      ?.permissions?.includes(PermissionKey.MANAGE_USER) ?? false
+  );
 
   constructor(private toastr: ToastrService, private userAuth: UserAuth, private userService: UserService) {
-    this.canManageUsers$ = this.userAuth.currentUser$.pipe(
-      map(user => user?.permissions?.includes(PermissionKey.MANAGE_USER) ?? false)
-    );
   }
 
   private destroy$ = new Subject<void>();
@@ -98,23 +113,6 @@ export class Sidebar implements AfterViewInit {
 
         if (taskViewIndex !== -1) {
           permissionsArray.at(taskViewIndex).setValue(true, { emitEvent: false });
-        }
-      });
-
-    this.userAuth.currentUser$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        const canManage = user?.permissions?.includes(PermissionKey.MANAGE_USER);
-
-        // If permission revoked while sidebar is open (any mode)
-        if (!canManage && this.isOpen) {
-          this.closeSidebar();
-          if (this.mode !== 'view') {
-            this.toastr.warning(
-              'Your permissions have changed',
-              'Access Updated'
-            );
-          }
         }
       });
   }
@@ -153,7 +151,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   openAdd() {
-    if (!this.canManageUsers) {
+    if (!this.canManageUsers()) {
       this.showNoPermission();
       return;
     }
@@ -176,7 +174,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   openEdit(user: UserModel) {
-    if (!this.canManageUsers) {
+    if (!this.canManageUsers()) {
       this.showNoPermission();
       return;
     }
@@ -208,7 +206,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   openDelete(user: UserModel) {
-    if (!this.canManageUsers) {
+    if (!this.canManageUsers()) {
       this.showNoPermission();
       return;
     }
@@ -284,7 +282,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   addUser() {
-    if (!this.canManageUsers) {
+    if (!this.canManageUsers()) {
       this.showNoPermission();
       return;
     }
@@ -316,7 +314,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   updateUser() {
-    if (!this.canManageUsers) {
+    if (!this.canManageUsers()) {
       this.showNoPermission();
       return;
     }
@@ -355,7 +353,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   deleteUser(id: string) {
-    if (!this.canManageUsers) {
+    if (!this.canManageUsers()) {
       this.showNoPermission();
       return;
     }
@@ -382,10 +380,6 @@ export class Sidebar implements AfterViewInit {
       const perm = this.permissionList[index];
       return perm.key === PermissionKey.TASK_VIEW || control.value === true;
     });
-  }
-
-  get canManageUsers(): boolean {
-    return this.userAuth.hasPermission(PermissionKey.MANAGE_USER);
   }
 
   toggleAllPermissions(): void {
