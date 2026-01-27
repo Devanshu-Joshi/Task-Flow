@@ -31,8 +31,7 @@
 <!-- ✅ Assigned Users (Signal Version) -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
     <div #assigneeContainer class="assignees-container bordered" [class.expanded]="expandedSig()"
-        [attr.title]="!expandedSig() && hiddenCountSig() > 0 ? getUsersTooltip(assignedUsersSig()) : null"
-        [class.few-users]="visibleUsersSig().length <= 2">
+        [attr.title]="getUsersTooltip(assignedUsersSig())" [class.few-users]="visibleUsersSig().length <= 2">
 
         <div class="assignees-scroll flex justify-evenly">
             @for (user of visibleUsersSig(); track user.id) {
