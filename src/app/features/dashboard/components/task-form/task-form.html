@@ -1,92 +1,100 @@
-<div class="px-5 sm:px-8 pt-8 pb-4 text-center">
-    <p class="text-xl sm:text-2xl font-semibold tracking-tight"
-        [ngClass]="{ 'text-black': dialogTitleColor === 'text-primary', 'text-yellow-500': dialogTitleColor === 'text-warn', 'text-red-600': dialogTitleColor === 'text-danger' }">
-        {{ dialogTitle }} Task </p>
-    <p class="text-xs sm:text-sm text-gray-500 mt-1"> {{ dialogDescription }} </p>
-</div>
+<div class="flex flex-col max-h-[80vh] w-full">
 
-<form [formGroup]="form" (ngSubmit)="submitForm.emit()" class="px-5 sm:px-8 pb-8">
-
-    <!-- TITLE -->
-    <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-3
-              focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-        <i class="bx bx-edit text-gray-400"></i>
-        <input type="text" formControlName="title" placeholder="Task Name"
-            class="w-full outline-none text-sm placeholder-gray-400" />
+    <!-- HEADER (fixed) -->
+    <div class="px-5 sm:px-8 pt-8 pb-4 text-center shrink-0">
+        <p class="text-xl sm:text-2xl font-semibold tracking-tight" [ngClass]="{
+              'text-black': dialogTitleColor === 'text-primary',
+              'text-yellow-500': dialogTitleColor === 'text-warn',
+              'text-red-600': dialogTitleColor === 'text-danger'
+            }">
+            {{ dialogTitle }} Task
+        </p>
+        <p class="text-xs sm:text-sm text-gray-500 mt-1">
+            {{ dialogDescription }}
+        </p>
     </div>
 
-    @if(form.controls['title'].touched && form.controls['title'].invalid) {
-    <p class="text-red-500 text-xs mt-1">
-        Task name is required (min 3 chars)
-    </p>
-    }
+    <!-- SCROLLABLE FORM CONTENT -->
+    <div class="flex-1 overflow-y-auto px-5 sm:px-8">
+        <form [formGroup]="form" (ngSubmit)="submitForm.emit()" class="pb-6">
 
-    <!-- DUE DATE -->
-    <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
-              focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-        <i class="bx bx-calendar text-gray-400"></i>
-        <input type="date" formControlName="dueDate" class="w-full outline-none text-sm" />
+            <!-- TITLE -->
+            <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-3
+                        focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
+                <i class="bx bx-edit text-gray-400"></i>
+                <input type="text" formControlName="title" placeholder="Task Name"
+                    class="w-full outline-none text-sm placeholder-gray-400" />
+            </div>
+
+            @if(form.controls['title'].touched && form.controls['title'].invalid) {
+            <p class="text-red-500 text-xs mt-1">
+                Task name is required (min 3 chars)
+            </p>
+            }
+
+            <!-- DUE DATE -->
+            <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
+                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
+                <i class="bx bx-calendar text-gray-400"></i>
+                <input type="date" formControlName="dueDate" class="w-full outline-none text-sm" />
+            </div>
+
+            <!-- STATUS -->
+            <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
+                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
+                <i class="bx bx-flag text-gray-400"></i>
+                <select formControlName="status" class="w-full outline-none text-sm bg-transparent">
+                    <option value="INCOMPLETE">Incomplete</option>
+                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="COMPLETED">Completed</option>
+                </select>
+            </div>
+
+            <!-- PRIORITY -->
+            <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
+                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
+                <i class="bx bx-error-circle text-gray-400"></i>
+                <select formControlName="priority" class="w-full outline-none text-sm bg-transparent">
+                    <option value="" disabled>Select priority</option>
+                    <option value="HIGH">High</option>
+                    <option value="NORMAL">Normal</option>
+                    <option value="LOW">Low</option>
+                </select>
+            </div>
+
+            <!-- ASSIGNED TO -->
+            <div class="border border-gray-300 rounded-xl px-3 py-2 my-4
+                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="bx bx-user-plus text-gray-400"></i>
+                    <span class="text-sm text-gray-600">Assign Users</span>
+                </div>
+
+                <ng-select formControlName="assignedTo" [items]="users$ | async" bindLabel="name" bindValue="id"
+                    [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom"
+                    appendTo="body" dropdownPosition="auto">
+                </ng-select>
+            </div>
+
+        </form>
     </div>
 
-    <!-- STATUS -->
-    <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
-              focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-        <i class="bx bx-flag text-gray-400"></i>
-        <select formControlName="status" class="w-full outline-none text-sm bg-transparent">
-            <option value="INCOMPLETE">Incomplete</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="COMPLETED">Completed</option>
-        </select>
-    </div>
+    <!-- ACTION BUTTONS (fixed bottom) -->
+    <div class="px-5 sm:px-8 pb-6 pt-4 bg-white shrink-0">
+        <div class="flex flex-col sm:flex-row gap-3">
+            <button type="button" (click)="cancel.emit()"
+                class="w-full py-3 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition">
+                Cancel
+            </button>
 
-    <!-- PRIORITY -->
-    <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
-              focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-        <i class="bx bx-error-circle text-gray-400"></i>
-        <select formControlName="priority" class="w-full outline-none text-sm bg-transparent">
-            <option value="" disabled selected>
-                Select priority
-            </option>
-            <option value="HIGH">High</option>
-            <option value="NORMAL">Normal</option>
-            <option value="LOW">Low</option>
-        </select>
-    </div>
-
-    <!-- ASSIGNED TO -->
-    <div class="border border-gray-300 rounded-xl px-3 py-2 my-4
-         focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-
-        <div class="flex items-center gap-2 mb-1">
-            <i class="bx bx-user-plus text-gray-400"></i>
-            <span class="text-sm text-gray-600">Assign Users</span>
+            <button type="button" (click)="submitForm.emit()" [ngClass]="{
+                  'submit-btn text-white': dialogTitleColor === 'text-primary',
+                  'edit-btn text-white': dialogTitleColor === 'text-warn',
+                  'delete-btn text-white': dialogTitleColor === 'text-danger'
+                }" class="w-full py-3 rounded-xl font-medium" [disabled]="form.invalid">
+                {{ dialogSubmitText }} Task
+            </button>
         </div>
-
-        <ng-select formControlName="assignedTo" [items]="users$ | async" bindLabel="name" bindValue="id"
-            [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom" appendTo="body"
-            dropdownPosition="auto">
-
-            <!-- Optional: custom option template -->
-            <ng-template ng-option-tmp let-item="item">
-                <span>{{ item.name }}</span>
-            </ng-template>
-
-        </ng-select>
     </div>
 
-    <!-- ACTION BUTTONS -->
-    <div class="mt-8 flex flex-col sm:flex-row gap-3">
-        <button type="button" (click)="cancel.emit()"
-            class="w-full py-3 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition">
-            Cancel
-        </button>
-
-        <button type="submit" [ngClass]="{
-        'submit-btn text-white': dialogTitleColor === 'text-primary',
-        'edit-btn text-white': dialogTitleColor === 'text-warn',
-        'delete-btn text-white': dialogTitleColor === 'text-danger'
-      }" class="w-full py-3 rounded-xl font-medium" [disabled]="form.invalid">
-            {{ dialogSubmitText }} Task
-        </button>
-    </div>
-</form>
+</div>
