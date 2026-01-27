@@ -47,8 +47,7 @@ export class Dashboard implements OnInit {
     // Reset pagination to first page
     this.p = 1;
 
-    this.clearExpandedTrigger.update(v => v + 1);
-    console.log(this.clearExpandedTrigger());
+    this.clearExpandedTrigger.update(v => (v % 2) + 1);
   }
 
   isDialogClosed: boolean = true;
