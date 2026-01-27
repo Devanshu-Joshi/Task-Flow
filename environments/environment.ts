@@ -1,5 +1,6 @@
 export const environment = {
-    API_URL: 'http://10.38.57.220:3080/api',
+    // API_URL: 'http://10.38.57.220:3080/api',
+    API_URL: 'http://localhost:3080/api',
     production: false,
     firebase: {
         apiKey: "AIzaSyD5iXJmHji_Mcn0rMvmzj7hhBCY05ICVbE",

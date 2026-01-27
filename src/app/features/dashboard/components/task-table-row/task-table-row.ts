@@ -7,7 +7,8 @@ import {
   ElementRef,
   AfterViewInit,
   signal,
-  computed
+  computed,
+  effect
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskView } from '@core/models/Task';
@@ -34,6 +35,20 @@ export class TaskTableRow implements AfterViewInit {
   @Input({ required: true })
   set assignedUsers(value: UserModel[]) {
     this.assignedUsersSig.set(value || []);
+  }
+
+  private clearTriggerSig = signal<number>(0);
+
+  @Input() set clearExpandedTrigger(v: number) {
+    if (v > 0)
+      this.clearTriggerSig.set(v);
+  }
+
+  constructor() {
+    effect(() => {
+      if (this.clearTriggerSig() > 0)  // track changes
+        this.expandedSig.set(false);
+    });
   }
 
   @Input() displayIndex?: number;

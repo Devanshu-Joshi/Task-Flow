@@ -41,6 +41,7 @@ export class TaskTable implements OnInit, OnChanges {
   @Input() currentPage = 1;
   @Input() sortField: 'title' | 'createdAt' = 'createdAt';
   @Input() sortDirection: 'asc' | 'desc' = 'desc';
+  @Input() clearExpandedTrigger!: number;
 
   /* -------------------------------------------------------------------------- */
   /*                                   Outputs                                  */

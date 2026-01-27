@@ -73,7 +73,7 @@
 
                 <tr app-task-table-row [task]="item" [assignedUsers]="taskAssignedUsersMap.get(item.id) || []"
                     [displayIndex]="(currentPage - 1) * itemsPerPage + index + 1" (edit)="onEdit($event)"
-                    (delete)="onDelete($event)">
+                    (delete)="onDelete($event)" [clearExpandedTrigger]="clearExpandedTrigger">
                 </tr>
 
                 }

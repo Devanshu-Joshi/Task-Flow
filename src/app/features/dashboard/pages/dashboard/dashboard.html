@@ -31,7 +31,7 @@
             <app-task-table [tasks]="filteredTasks()" [itemsPerPage]="itemsPerPage" [currentPage]="p"
                 [sortField]="sortField()" [sortDirection]="sortDirection()" (editTask)="edit($event)"
                 (deleteTask)="delete($event)" (pageChange)="p = $event" (clearFilters)="clearFilters()"
-                (sortByChange)="sortBy($event)">
+                (sortByChange)="sortBy($event)" [clearExpandedTrigger]="clearExpandedTrigger()">
             </app-task-table>
         </div>
 

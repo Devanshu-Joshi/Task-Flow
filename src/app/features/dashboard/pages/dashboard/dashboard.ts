@@ -29,6 +29,7 @@ export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
+  clearExpandedTrigger = signal(0);
   clearFilters(): void {
     // Clear search box
     this.searchControl.setValue('');
@@ -45,6 +46,9 @@ export class Dashboard implements OnInit {
 
     // Reset pagination to first page
     this.p = 1;
+
+    this.clearExpandedTrigger.update(v => v + 1);
+    console.log(this.clearExpandedTrigger());
   }
 
   isDialogClosed: boolean = true;

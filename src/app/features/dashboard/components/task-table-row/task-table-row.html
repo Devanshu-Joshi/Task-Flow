@@ -43,7 +43,7 @@
             }
 
             @if (!expandedSig() && hiddenCountSig() > 0) {
-            <span class="assignee-chip more-chip" (click)="toggleExpanded()">
+            <span class="assignee-chip more-chip cursor-pointer" (click)="toggleExpanded()">
                 +{{ hiddenCountSig() }} more
             </span>
             }
