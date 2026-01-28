@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { UserModel } from '@core/models/UserModel';
 
 @Component({
   selector: 'app-task-filters',
@@ -18,6 +19,7 @@ export class TaskFilters {
   // Inputs from Parent (Static data)
   statusOptions = input.required<any[]>();
   pageSizeOptions = input.required<readonly (number | string)[]>();
+  assignedUserOptions = input.required<UserModel[]>();
 
   // The Search Control is passed down so the parent can handle the debounce subscription
   @Input({ required: true }) searchControl!: FormControl;
@@ -27,6 +29,7 @@ export class TaskFilters {
   dateRange = model<{ startDate: any; endDate: any } | null>(null);
   selectedStatus = model<string | null>(null);
   selectedPageSize = model<number | 'All'>(5);
+  selectedAssignedUsers = model<UserModel | null>(null);
 
   // Outputs (Events)
   @Output() addTask = new EventEmitter<void>();

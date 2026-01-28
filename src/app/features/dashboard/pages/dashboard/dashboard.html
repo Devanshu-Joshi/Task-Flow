@@ -25,7 +25,7 @@
             <app-task-filters [statusOptions]="statusOptions" [pageSizeOptions]="pageSizeOptions"
                 [searchControl]="searchControl" [(dateRange)]="dateRange" [(selectedStatus)]="selectedStatus"
                 [(selectedPageSize)]="selectedPageSize" (pageSizeChangeTrigger)="setItemsPerPage($event)"
-                (addTask)="toggleDialog()">
+                (addTask)="toggleDialog()" [assignedUserOptions]="users()">
             </app-task-filters>
 
             <app-task-table [tasks]="filteredTasks()" [itemsPerPage]="itemsPerPage" [currentPage]="p"
