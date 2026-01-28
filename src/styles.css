@@ -244,7 +244,7 @@ body {
 
 .filter-select .ng-dropdown-panel-items {
     border: 2px solid #9ca3af !important;
-    height: 150px !important;
+    height: 120px !important;
 }
 
 /*** Custom Scrollbar ***/

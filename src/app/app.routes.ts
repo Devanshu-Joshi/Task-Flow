@@ -19,7 +19,7 @@ export const routes: Routes = [
         data: { guestOnly: true }
     },
     {
-        path: 'dashboard',
+        path: 'tasks',
         component: Dashboard,
         canActivate: [authGuard],
         data: { requiresAuth: true }

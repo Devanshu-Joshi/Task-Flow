@@ -191,7 +191,7 @@
 
 /* Arrow alignment fix */
 .filter-select ::ng-deep .ng-arrow-wrapper {
-    padding-right: 6px;
+    display: none;
 }
 
 /* Dropdown panel */
@@ -220,4 +220,11 @@
 .filter-select ::ng-deep .ng-option-selected {
     font-weight: 600;
     background: #eef2ff;
+}
+
+.filter-select ::ng-deep .ng-select-container .ng-clear-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: none !important;
 }
