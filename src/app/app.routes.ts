@@ -5,13 +5,13 @@ import { Tasks } from '@features/tasks/pages/tasks/tasks';
 import { authGuard } from '@core/guards/auth-guard';
 import { User } from '@features/users/pages/user/user';
 import { Home } from '@features/home/pages/home/home';
+import { Dashboard } from '@features/dashboard/pages/dashboard/dashboard';
 
 export const routes: Routes = [
     {
         path: '',
         component: Home,
-        canActivate: [authGuard],
-        data: { guestOnly: true }
+        canActivate: [authGuard]
     },
     {
         path: 'login',
@@ -34,6 +34,12 @@ export const routes: Routes = [
     {
         path: 'users',
         component: User,
+        canActivate: [authGuard],
+        data: { requiresAuth: true }
+    },
+    {
+        path: 'dashboard',
+        component: Dashboard,
         canActivate: [authGuard],
         data: { requiresAuth: true }
     },
