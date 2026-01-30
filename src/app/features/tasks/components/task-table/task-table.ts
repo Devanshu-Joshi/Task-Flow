@@ -5,7 +5,10 @@ import {
   EventEmitter,
   OnInit,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  signal,
+  DestroyRef,
+  inject
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -16,6 +19,8 @@ import { TaskTableFooter } from '../task-table-footer/task-table-footer';
 import { UserService } from '@core/services/user/user.service';
 import { UserModel } from '@core/models/UserModel'
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Observable } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-task-table',
@@ -58,7 +63,9 @@ export class TaskTable implements OnInit, OnChanges {
   /*                                    State                                   */
   /* -------------------------------------------------------------------------- */
 
-  users: UserModel[] = [];
+  users = signal<UserModel[]>([]);
+  users$!: Observable<UserModel[]>;
+  private destroyRef = inject(DestroyRef);
 
   /** Map: taskId -> assigned users */
   taskAssignedUsersMap = new Map<string, UserModel[]>();
@@ -81,7 +88,10 @@ export class TaskTable implements OnInit, OnChanges {
   /* -------------------------------------------------------------------------- */
 
   ngOnInit(): void {
-    this.loadUsers();
+    this.users$ = this.userService.getUsersByParent();
+    this.users$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(users => this.users.set(users));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -102,21 +112,10 @@ export class TaskTable implements OnInit, OnChanges {
   /*                                   Methods                                  */
   /* -------------------------------------------------------------------------- */
 
-  private loadUsers(): void {
-    this.userService.getUsersByParent().subscribe({
-      next: (users) => {
-        this.users = users;
-        this.mapAllTasksAssignedUsers();
-        this.updatePagedTasks();
-      },
-      error: (err) => console.error('Failed to load users', err)
-    });
-  }
-
   private mapAllTasksAssignedUsers(): void {
     this.taskAssignedUsersMap.clear();
 
-    const userMap = new Map(this.users.map(user => [user.id, user]));
+    const userMap = new Map(this.users().map(user => [user.id, user]));
 
     this.tasks.forEach(task => {
       const assignedUsers = task.assignedTo
