@@ -17,8 +17,9 @@ export class TokenService {
     localStorage.setItem('token', token);
   }
 
-  clearToken(): void {
+  clearToken(forced = false): void {
     localStorage.removeItem('token');
-    this.tokenClearedSubject.next();
+    if (forced)
+      this.tokenClearedSubject.next();
   }
 }

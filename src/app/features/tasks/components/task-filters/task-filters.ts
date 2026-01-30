@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, Output, model, input, ViewChild, ElementRef, effect, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, model, input, ViewChild, ElementRef, effect, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { UserModel } from '@core/models/UserModel';
+import { UserAuth } from '@core/services/user-auth/user-auth';
+import { PermissionKey } from '@core/models/PermissionKey';
 
 @Component({
   selector: 'app-task-filters',
@@ -17,7 +19,7 @@ import { UserModel } from '@core/models/UserModel';
 })
 export class TaskFilters {
 
-  constructor() {
+  constructor(private authService: UserAuth) {
     effect(() => {
       this.UISwitchedTrigger.emit(this.isUISwitched());
     })
@@ -66,4 +68,8 @@ export class TaskFilters {
     }
   }
 
+  /* Permission signals */
+  canCreateTaskSig = computed(() =>
+    this.authService.currentUserSignal()?.permissions?.includes(PermissionKey.TASK_CREATE) ?? false
+  );
 }

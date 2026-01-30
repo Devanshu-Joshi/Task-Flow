@@ -69,16 +69,18 @@
     <div class="flex justify-center">
         <div class="flex items-center justify-center gap-2 w-full sm:w-auto">
 
-            <button
-                class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition cursor-pointer"
-                (click)="edit.emit(task)">
+            <button [disabled]="!canEditSig()" [class.opacity-40]="!canEditSig()"
+                [class.cursor-not-allowed]="!canEditSig()"
+                class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition"
+                (click)="canEditSig() && edit.emit(task)">
                 <i class="bx bx-edit text-base"></i>
                 <span class="whitespace-nowrap">Edit</span>
             </button>
 
-            <button
-                class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-red-700 hover:bg-red-200 transition cursor-pointer"
-                (click)="delete.emit(task)">
+            <button [disabled]="!canDeleteSig()" [class.opacity-40]="!canDeleteSig()"
+                [class.cursor-not-allowed]="!canDeleteSig()"
+                class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-red-700 hover:bg-red-200 transition"
+                (click)="canDeleteSig() && delete.emit(task)">
                 <i class="bx bx-trash text-base"></i>
                 <span class="whitespace-nowrap">Delete</span>
             </button>

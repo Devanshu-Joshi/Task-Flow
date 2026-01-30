@@ -87,10 +87,11 @@
 
     <!-- Add Task Button -->
     <div class="flex gap-2 w-full sm:col-span-1 lg:w-auto lg:shrink-0">
-        <button class="cursor-pointer w-full lg:w-auto py-2 px-4 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600
-             text-white shadow-md shadow-purple-500/30
-             hover:shadow-lg hover:shadow-purple-500/40
-             lg:hover:scale-105 transition-all duration-200" (click)="addTask.emit()">
+        <button [disabled]="!canCreateTaskSig()" [class.opacity-40]="!canCreateTaskSig()"
+            [class.cursor-not-allowed]="!canCreateTaskSig()" class="w-full lg:w-auto py-2 px-4 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600
+         text-white shadow-md shadow-purple-500/30
+         hover:shadow-lg hover:shadow-purple-500/40
+         lg:hover:scale-105 transition-all duration-200" (click)="canCreateTaskSig() && addTask.emit()">
             Add Task
         </button>
     </div>

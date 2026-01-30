@@ -34,6 +34,7 @@ import { UserService } from '@core/services/user/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UserAuth } from '@core/services/user-auth/user-auth';
 
 @Component({
   selector: 'app-user-table',
@@ -51,7 +52,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class UserTable {
 
-  constructor(private userService: UserService, private toastr: ToastrService) { }
+  constructor(private userService: UserService, private toastr: ToastrService, private authService: UserAuth) { }
 
   @Output() addUser = new EventEmitter<void>();
   @Output() viewUser = new EventEmitter<UserModel>();
@@ -180,12 +181,15 @@ export class UserTable {
 
     this.users$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (users) => {
-          this.users.set(users);
-        },
-        error: (err) => console.error(err)
-      })
+      .subscribe(users => {
+        const currentUser = this.authService.currentUserSignal();
+
+        const filteredUsers = currentUser
+          ? users.filter(u => u.id !== currentUser.id)
+          : users;
+
+        this.users.set(filteredUsers);
+      });
   }
 
   /* -------------------------------------------------------------------------- */

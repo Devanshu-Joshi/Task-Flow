@@ -19,13 +19,13 @@ export class UserService {
 
   private loaded = false;
 
-  getUsersByParent(force = false, includeSelf = false): Observable<UserModel[]> {
-    if (!this.loaded || force || includeSelf) {
+  getUsersByParent(force = false): Observable<UserModel[]> {
+    if (!this.loaded || force) {
       this.loaded = true;
       // this.userAuth.refreshCurrentUser();
 
       this.http
-        .get<UserModel[]>(`${this.apiUrl}/by-parent?includeSelf=${includeSelf}`)
+        .get<UserModel[]>(`${this.apiUrl}/by-parent`)
         .pipe(take(1))
         .subscribe(users => this.usersSubject.next(users));
     }

@@ -13,6 +13,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { TaskView } from '@core/models/Task';
 import { UserModel } from '@core/models/UserModel';
+import { UserAuth } from '@core/services/user-auth/user-auth';
+import { PermissionKey } from '@core/models/PermissionKey';
 
 @Component({
   selector: 'tr[app-task-table-row]',
@@ -44,7 +46,7 @@ export class TaskTableRow implements AfterViewInit {
       this.clearTriggerSig.set(v);
   }
 
-  constructor() {
+  constructor(private authService: UserAuth) {
     effect(() => {
       if (this.clearTriggerSig() > 0)  // track changes
         this.expandedSig.set(false);
@@ -108,6 +110,14 @@ export class TaskTableRow implements AfterViewInit {
     return visible;
   });
 
+  /* Permission signals */
+  canEditSig = computed(() =>
+    this.authService.currentUserSignal()?.permissions?.includes(PermissionKey.TASK_EDIT) ?? false
+  );
+
+  canDeleteSig = computed(() =>
+    this.authService.currentUserSignal()?.permissions?.includes(PermissionKey.TASK_DELETE) ?? false
+  );
 
   hiddenCountSig = computed(() =>
     this.assignedUsersSig().length - this.visibleUsersSig().length
