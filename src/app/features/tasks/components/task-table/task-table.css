@@ -14,3 +14,31 @@
 tr[cdkdrag] {
     display: table-row;
 }
+
+/* 🔥 Make drag preview behave like a table */
+.cdk-drag-preview {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Make preview cells keep spacing */
+.cdk-drag-preview td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Prevent weird stretching animation */
+.cdk-drag-animating {
+    transition: transform 200ms ease;
+}
+
+/* Hide placeholder row */
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+table {
+    table-layout: fixed;
+}

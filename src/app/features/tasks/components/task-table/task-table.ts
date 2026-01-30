@@ -14,7 +14,8 @@ import { TaskTableRow } from '@features/tasks/components/task-table-row/task-tab
 import { EmptyState } from '@shared/components/empty-state/empty-state';
 import { TaskTableFooter } from '../task-table-footer/task-table-footer';
 import { UserService } from '@core/services/user/user.service';
-import { UserModel } from '@core/models/UserModel';
+import { UserModel } from '@core/models/UserModel'
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-task-table',
@@ -23,7 +24,8 @@ import { UserModel } from '@core/models/UserModel';
     CommonModule,
     TaskTableRow,
     EmptyState,
-    TaskTableFooter
+    TaskTableFooter,
+    DragDropModule
   ],
   templateUrl: './task-table.html',
   styleUrl: './task-table.css'
@@ -50,6 +52,7 @@ export class TaskTable implements OnInit, OnChanges {
   @Output() pageChange = new EventEmitter<number>();
   @Output() clearFilters = new EventEmitter<void>();
   @Output() sortByChange = new EventEmitter<'title' | 'createdAt'>();
+  @Output() reorderTasks = new EventEmitter<TaskView[]>();
 
   /* -------------------------------------------------------------------------- */
   /*                                    State                                   */
@@ -148,6 +151,27 @@ export class TaskTable implements OnInit, OnChanges {
 
   onSortBy(field: 'title' | 'createdAt'): void {
     this.sortByChange.emit(field);
+  }
+
+  drop(event: CdkDragDrop<TaskView[]>) {
+
+    if (event.previousIndex === event.currentIndex) return;
+
+    // Convert page index → global index
+    const globalPrevIndex =
+      (this.currentPage - 1) * this.itemsPerPage + event.previousIndex;
+
+    const globalCurrIndex =
+      (this.currentPage - 1) * this.itemsPerPage + event.currentIndex;
+
+    // Reorder MASTER array
+    moveItemInArray(this.tasks, globalPrevIndex, globalCurrIndex);
+
+    // Rebuild current page
+    this.updatePagedTasks();
+
+    // 🔥 Tell parent to persist new order
+    this.reorderTasks.emit(this.tasks);
   }
 
 }

@@ -64,22 +64,18 @@
             </thead>
 
             <!-- ============================== BODY ============================== -->
-            <tbody class="divide-y divide-gray-200">
+            <tbody cdkDropList [cdkDropListData]="pagedTasks" (cdkDropListDropped)="drop($event)"
+                class="divide-y divide-gray-200">
                 @for (item of pagedTasks; let index = $index; track item.id)
                 {
 
-                <tr app-task-table-row [task]="item" [assignedUsers]="taskAssignedUsersMap.get(item.id) || []"
+                <tr cdkDrag [cdkDragData]="item" app-task-table-row [task]="item"
+                    [assignedUsers]="taskAssignedUsersMap.get(item.id) || []"
                     [displayIndex]="(currentPage - 1) * itemsPerPage + index + 1" (edit)="onEdit($event)"
-                    (delete)="onDelete($event)" [clearExpandedTrigger]="clearExpandedTrigger">
+                    (delete)="onDelete($event)" [clearExpandedTrigger]="clearExpandedTrigger"
+                    class="cursor-grab active:cursor-grabbing">
                 </tr>
 
-                }
-                @empty {
-                <tr>
-                    <td colspan="6" class="p-4 sm:p-6">
-                        <app-empty-state></app-empty-state>
-                    </td>
-                </tr>
                 }
             </tbody>
         </table>
