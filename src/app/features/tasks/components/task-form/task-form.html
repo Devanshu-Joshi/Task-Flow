@@ -39,6 +39,20 @@
                 <input type="date" formControlName="dueDate" class="w-full outline-none text-sm" />
             </div>
 
+            <!-- ASSIGNED TO -->
+            <div class="border border-gray-300 rounded-xl px-3 py-2 my-4
+                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition sub-container">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="bx bx-user-plus text-gray-400"></i>
+                    <span class="text-sm text-gray-600">Assign Users</span>
+                </div>
+
+                <ng-select formControlName="assignedTo" [items]="users$ | async" bindLabel="name" bindValue="id"
+                    [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom"
+                    class="filter-select" [dropdownPosition]="'bottom'">
+                </ng-select>
+            </div>
+
             <!-- STATUS -->
             <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
                         focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
@@ -62,19 +76,6 @@
                 </select>
             </div>
 
-            <!-- ASSIGNED TO -->
-            <div class="border border-gray-300 rounded-xl px-3 py-2 my-4
-                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition sub-container">
-                <div class="flex items-center gap-2 mb-1">
-                    <i class="bx bx-user-plus text-gray-400"></i>
-                    <span class="text-sm text-gray-600">Assign Users</span>
-                </div>
-
-                <ng-select formControlName="assignedTo" [items]="users$ | async" bindLabel="name" bindValue="id"
-                    [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom"
-                    class="filter-select" appendTo=".sub-container" [dropdownPosition]="'bottom'">
-                </ng-select>
-            </div>
 
         </form>
     </div>

@@ -316,12 +316,12 @@
     background: #eef2ff;
 }
 
-:host ::ng-deep .filter-select.ng-dropdown-panel {
+:host ::ng-deep .filter-select .ng-dropdown-panel {
+    border: 2px solid #9ca3af !important;
     top: auto !important;
     left: auto !important;
 }
 
-:host ::ng-deep .filter-select.ng-dropdown-panel .ng-dropdown-panel-items {
-    border: 2px solid #9ca3af !important;
+:host ::ng-deep .filter-select .ng-dropdown-panel .ng-dropdown-panel-items {
     height: 120px !important;
 }

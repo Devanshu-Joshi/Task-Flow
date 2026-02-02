@@ -285,7 +285,6 @@ export class UserTable {
 
   filteredTasks = computed<UserModel[]>(() => {
     const users = this.users();
-    console.log(users);
 
     if (!users || users.length === 0) {
       return [];
