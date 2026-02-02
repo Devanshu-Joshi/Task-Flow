@@ -62,6 +62,7 @@ export class UserAuth {
         });
 
     } else {
+      console.log("Error in initAuth");
       this.clearAuth();
       this.authInitializedSubject.next(true);
     }
@@ -107,12 +108,14 @@ export class UserAuth {
   }
 
   logout() {
+    console.log("Logout");
     this.clearAuth();
     this.router.navigate(['/login']);
     this.toastr.success('Logout successful', 'Success');
   }
 
   private handleForcedLogout() {
+    console.log("Forced Logout");
     this.clearAuth();
     this.router.navigate(['/login']);
     this.toastr.warning('Session expired. Please login again.', 'Unauthorized');

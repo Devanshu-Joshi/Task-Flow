@@ -97,7 +97,8 @@
     </div>
 
     <!-- View Mode Switch -->
-    <label class="relative inline-flex items-center cursor-pointer select-none">
+    <label class="relative inline-flex items-center cursor-pointer select-none"
+        [title]="isUISwitched() ? 'Switch to Grid View' : 'Switch to Kanban View'">
 
         <!-- Checkbox -->
         <input type="checkbox" class="sr-only peer" [checked]="isUISwitched()"
