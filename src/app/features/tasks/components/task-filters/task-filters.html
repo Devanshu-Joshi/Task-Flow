@@ -1,10 +1,10 @@
 <div class="flex flex-col w-full gap-4 mb-5">
 
     <!-- ================= ROW 1 ================= -->
-    <div class="flex flex-wrap lg:flex-nowrap gap-3 w-full min-w-0">
+    <div class="flex flex-col md:flex-row flex-wrap gap-3 w-full">
 
         <!-- Search Input -->
-        <div class="relative w-full min-w-0 lg:flex-1">
+        <div class="relative w-full md:flex-1 min-w-0">
             <input type="search"
                 class="w-full border-2 border-gray-300 pr-10 pl-4 py-2 rounded-lg text-sm sm:text-base focus:outline-none h-11 placeholder:text-gray-400"
                 placeholder="Search..." [formControl]="searchControl" />
@@ -12,68 +12,47 @@
         </div>
 
         <!-- Date Picker -->
-        <div class="w-full min-w-0 lg:flex-1">
+        <div class="w-full md:flex-1 min-w-0">
             <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
                 [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
                 [linkedCalendars]="true" placeholder="Date range"
                 class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11 placeholder:text-gray-400"
-                (click)="toggleDatePicker()" [title]="dateRange()?.startDate && dateRange()?.endDate 
-  ? ( (dateRange()?.startDate | date:'dd/MM/yyyy':'UTC') + ' to ' + (dateRange()?.endDate | date:'dd/MM/yyyy':'UTC') )
-  : ''" />
+                (click)="toggleDatePicker()" />
         </div>
 
     </div>
 
 
     <!-- ================= ROW 2 ================= -->
-    <div class="flex flex-wrap lg:flex-nowrap gap-3 w-full items-center">
+    <div class="flex flex-col md:flex-row flex-wrap gap-3 w-full items-stretch">
 
-        <div class="w-65 min-w-65 flex-1 max-w-75">
+        <!-- Users -->
+        <div class="w-full md:flex-1 lg:w-65 lg:min-w-65 lg:max-w-75">
             <ng-select class="user-select filter-select w-full" [items]="assignedUserOptions()" [clearable]="false"
                 bindLabel="name" bindValue="id" [(ngModel)]="selectedAssignedUser" [searchable]="false"
                 [closeOnSelect]="true" [clearable]="true">
-                <ng-template ng-placeholder-tmp #placeholder>
+                <ng-template ng-placeholder-tmp>
                     <span class="text-gray-400 font-semibold whitespace-nowrap">Users</span>
                 </ng-template>
             </ng-select>
         </div>
 
-        <div class="relative w-42.5 min-w-42.5 flex-1 max-w-75">
+        <!-- Status -->
+        <div class="relative w-full md:flex-1 lg:w-42.5 lg:min-w-42.5 lg:max-w-75">
             <ng-select class="status-select filter-select w-full" [items]="statusOptions()" bindLabel="label"
                 bindValue="value" [(ngModel)]="selectedStatus" [clearable]="false" [searchable]="false"
-                [closeOnSelect]="true">
-                <ng-template ng-placeholder-tmp #placeholder>
-                    <span class="text-gray-400 font-semibold whitespace-nowrap">Status</span>
-                </ng-template>
-
-                <ng-template ng-label-tmp let-item="item">
-                    @if (item?.value !== null) {
-                    <span class="whitespace-nowrap" [ngClass]="{
-                'text-green-600': item.value === 'COMPLETED',
-                'text-yellow-600': item.value === 'IN_PROGRESS',
-                'text-red-600': item.value === 'INCOMPLETE'
-              }">
-                        {{ item.label }}
-                    </span>
-                    } @else {
-                    <ng-template [ngTemplateOutlet]="placeholder"></ng-template>
-                    }
-                </ng-template>
-
-                <ng-template ng-option-tmp let-item="item">
-                    <span class="whitespace-nowrap" [ngClass]="{
-              'text-gray-700': item.value === null,
-              'text-green-600': item.value === 'COMPLETED',
-              'text-yellow-600': item.value === 'IN_PROGRESS',
-              'text-red-600': item.value === 'INCOMPLETE'
-            }">
-                        {{ item.label }}
-                    </span>
-                </ng-template>
-            </ng-select>
+                [closeOnSelect]="true"> <ng-template ng-placeholder-tmp #placeholder> <span
+                        class="text-gray-400 font-semibold whitespace-nowrap">Status</span> </ng-template> <ng-template
+                    ng-label-tmp let-item="item"> @if (item?.value !== null) { <span class="whitespace-nowrap"
+                        [ngClass]="{ 'text-green-600': item.value === 'COMPLETED', 'text-yellow-600': item.value === 'IN_PROGRESS', 'text-red-600': item.value === 'INCOMPLETE' }">
+                        {{ item.label }} </span> } @else { <ng-template [ngTemplateOutlet]="placeholder"></ng-template>
+                    } </ng-template> <ng-template ng-option-tmp let-item="item"> <span class="whitespace-nowrap"
+                        [ngClass]="{ 'text-gray-700': item.value === null, 'text-green-600': item.value === 'COMPLETED', 'text-yellow-600': item.value === 'IN_PROGRESS', 'text-red-600': item.value === 'INCOMPLETE' }">
+                        {{ item.label }} </span> </ng-template> </ng-select>
         </div>
 
-        <div class="relative w-45 min-w-45 flex-1 max-w-75">
+        <!-- Tasks per page -->
+        <div class="relative w-full md:flex-1 lg:w-45 lg:min-w-45 lg:max-w-75">
             <ng-select class="tasks-per-page-select filter-select w-full" [items]="pageSizeOptions()"
                 [clearable]="false" [searchable]="false" [ngModel]="selectedPageSize()"
                 (ngModelChange)="onPageSizeChange($event)" [closeOnSelect]="true">
@@ -82,48 +61,54 @@
                         Tasks per page : <strong>{{ item }}</strong>
                     </span>
                 </ng-template>
-
                 <ng-template ng-option-tmp let-item="item">
                     {{ item }}
                 </ng-template>
             </ng-select>
         </div>
 
-        <!-- Add Task Button (LAST + FIXED) -->
-        <div class="flex-1 min-w-26.25 flex gap-2">
-            <button [disabled]="!canCreateTaskSig()" [class.opacity-40]="!canCreateTaskSig()"
-                [class.cursor-not-allowed]="!canCreateTaskSig()" class="w-full py-2 px-4 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600
-         text-white shadow-md shadow-purple-500/30
-         hover:shadow-lg hover:shadow-purple-500/40
-         lg:hover:scale-105 transition-all duration-200" (click)="canCreateTaskSig() && addTask.emit()">
-                Add Task
-            </button>
+        <div class="w-full flex gap-3 md:contents">
+
+            <!-- Add Task -->
+            <div class="flex-1 sm:w-full md:flex-1 lg:min-w-26.25 flex gap-2 sm:gap-3 items-center">
+                <button [disabled]="!canCreateTaskSig()" [class.opacity-40]="!canCreateTaskSig()"
+                    [class.cursor-not-allowed]="!canCreateTaskSig()" class="w-full py-2 px-4 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600
+text-white whitespace-nowrap
+shadow-md shadow-purple-500/30
+hover:shadow-lg hover:shadow-purple-500/40
+lg:hover:scale-105 transition-all duration-200" (click)="canCreateTaskSig() && addTask.emit()">
+                    Add Task
+                </button>
+            </div>
+
+            <!-- View Mode Switch -->
+            <div class="shrink-0 flex justify-end sm:w-auto sm:justify-start sm:flex-none">
+                <label class="relative inline-flex items-center cursor-pointer select-none shrink-0"
+                    [title]="isUISwitched() ? 'Switch to Grid View' : 'Switch to Kanban View'">
+
+                    <input type="checkbox" class="sr-only peer" [checked]="isUISwitched()"
+                        (change)="isUISwitched.set($event.target.checked)" />
+
+                    <div class="w-20 h-11 bg-gray-200 rounded-xl peer-checked:bg-indigo-100
+                    transition-colors duration-300 shadow-inner flex items-center px-1">
+
+                        <div class="w-full flex justify-between px-2 text-gray-400">
+                            <i class="bx bx-table text-lg"></i>
+                            <i class="bx bx-columns-3 text-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-1 top-1 h-9 w-9 rounded-lg
+                    bg-linear-to-r from-purple-600 to-indigo-600
+                    shadow-md transition-all duration-300
+                    peer-checked:translate-x-9 flex items-center justify-center text-white">
+
+                        <i class="bx text-lg" [ngClass]="isUISwitched() ? 'bx-columns-3' : 'bx-table'"></i>
+                    </div>
+                </label>
+            </div>
+
         </div>
-
-        <!-- View Mode Switch (FIXED) -->
-        <label class="relative inline-flex items-center cursor-pointer select-none shrink-0"
-            [title]="isUISwitched() ? 'Switch to Grid View' : 'Switch to Kanban View'">
-
-            <input type="checkbox" class="sr-only peer" [checked]="isUISwitched()"
-                (change)="isUISwitched.set($event.target.checked)" />
-
-            <div class="w-20 h-11 bg-gray-200 rounded-xl peer-checked:bg-indigo-100
-      transition-colors duration-300 shadow-inner flex items-center px-1">
-
-                <div class="w-full flex justify-between px-2 text-gray-400">
-                    <i class="bx bx-table text-lg"></i>
-                    <i class="bx bx-columns-3 text-lg"></i>
-                </div>
-            </div>
-
-            <div class="absolute left-1 top-1 h-9 w-9 rounded-lg
-      bg-linear-to-r from-purple-600 to-indigo-600
-      shadow-md transition-all duration-300
-      peer-checked:translate-x-9 flex items-center justify-center text-white">
-
-                <i class="bx text-lg" [ngClass]="isUISwitched() ? 'bx-columns-3' : 'bx-table'"></i>
-            </div>
-        </label>
 
     </div>
 
