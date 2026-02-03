@@ -15,15 +15,8 @@
     align-items: center;
     gap: 6px;
     width: 100%;
-    overflow: scroll;
-}
-
-/* Expanded → scroll only inner layer */
-.assignees-container.expanded .assignees-scroll {
     overflow-x: auto;
     overflow-y: hidden;
-    padding-bottom: 6px;
-    /* space so scrollbar doesn't overlap chips */
 }
 
 /* Modern overlay scrollbar look */
@@ -56,6 +49,12 @@
     /* still keep inline */
 }
 
+.assignees-container.expanded .assignees-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 6px;
+}
+
 /* 📱 Smaller screens */
 @media (max-width: 640px) {
     .assignees-container {
@@ -63,6 +62,11 @@
         max-width: 150px;
         gap: 4px;
     }
+}
+
+.assignees-container:not(.has-more) .assignees-scroll {
+    padding-bottom: 6px;
+    /* space for overlay scrollbar */
 }
 
 .assignee-chip {
@@ -110,23 +114,16 @@
     text-overflow: ellipsis;
 }
 
+.assignees-container.has-more .assignees-scroll {
+    overflow: hidden;
+    /* 🔥 lock scrolling */
+}
+
 .avatar {
     width: 18px;
     height: 18px;
     border-radius: 50%;
     flex-shrink: 0;
-}
-
-/* When only 1–2 users → let chip grow naturally */
-.assignees-container.few-users .assignee-chip {
-    min-width: unset;
-    max-width: none;
-    flex: 0 0 auto;
-}
-
-.assignees-container.few-users .name {
-    overflow: visible;
-    text-overflow: clip;
 }
 
 .more-chip {
@@ -149,6 +146,10 @@
 
     flex-shrink: 0;
     /* never shrink */
+}
+
+.assignees-scroll {
+    scrollbar-gutter: stable;
 }
 
 /* Container field look */

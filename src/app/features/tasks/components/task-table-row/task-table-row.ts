@@ -27,7 +27,7 @@ import { PermissionKey } from '@core/models/PermissionKey';
     class: 'hover:bg-gray-50 transition'
   }
 })
-export class TaskTableRow implements AfterViewInit {
+export class TaskTableRow {
 
   /* -------------------------------------------------------------------------- */
   /*                                   Inputs                                   */
@@ -68,19 +68,11 @@ export class TaskTableRow implements AfterViewInit {
   /*                                  ViewChild                                 */
   /* -------------------------------------------------------------------------- */
 
-  @ViewChild('assigneeContainer') container!: ElementRef<HTMLDivElement>;
-
   /* -------------------------------------------------------------------------- */
   /*                                   Signals                                  */
   /* -------------------------------------------------------------------------- */
 
   assignedUsersSig = signal<UserModel[]>([]);
-  private containerWidthSig = signal<number>(0);
-
-  /* Smart width rules */
-  private readonly IDEAL_CHIP_WIDTH = 90;
-  private readonly MIN_CHIP_WIDTH = 65;
-  private readonly MORE_CHIP_WIDTH = 60;
   expandedSig = signal(false);
 
   toggleExpanded() {
@@ -89,34 +81,10 @@ export class TaskTableRow implements AfterViewInit {
 
   visibleUsersSig = computed(() => {
     const users = this.assignedUsersSig();
-    const totalWidth = this.containerWidthSig();
 
     if (this.expandedSig()) return users;
-    if (!totalWidth || !users.length) return [];
 
-    let usedWidth = 0;
-    const visible: UserModel[] = [];
-
-    for (let i = 0; i < users.length; i++) {
-      const remainingUsers = users.length - (i + 1);
-      const needMoreChip = remainingUsers > 0;
-
-      const spaceLeft = totalWidth - usedWidth;
-      const reservedForMore = needMoreChip ? this.MORE_CHIP_WIDTH : 0;
-      const available = spaceLeft - reservedForMore;
-
-      if (available >= this.IDEAL_CHIP_WIDTH) {
-        visible.push(users[i]);
-        usedWidth += this.IDEAL_CHIP_WIDTH;
-      } else if (available >= this.MIN_CHIP_WIDTH) {
-        visible.push(users[i]);
-        usedWidth += this.MIN_CHIP_WIDTH;
-      } else {
-        break;
-      }
-    }
-
-    return visible;
+    return users.slice(0, 2); // 🔥 HARD RULE
   });
 
   /* Permission signals */
@@ -142,20 +110,6 @@ export class TaskTableRow implements AfterViewInit {
   /* -------------------------------------------------------------------------- */
   /*                              Lifecycle Logic                               */
   /* -------------------------------------------------------------------------- */
-
-  ngAfterViewInit() {
-    setTimeout(() => this.updateWidth());
-
-    window.addEventListener('resize', () => this.updateWidth());
-  }
-
-  private updateWidth() {
-    if (!this.container) return;
-    const width = this.container.nativeElement.offsetWidth;
-    if (width > 0) {
-      this.containerWidthSig.set(width);
-    }
-  }
 
   /* -------------------------------------------------------------------------- */
   /*                                  Helpers                                   */
