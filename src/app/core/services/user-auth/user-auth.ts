@@ -162,7 +162,9 @@ export class UserAuth {
     const isExpired = payload.exp * 1000 < Date.now();
 
     if (isExpired) {
-      console.log("Token is expired");
+      console.log(
+        `Token expired | expMs: ${payload.exp * 1000} | nowMs: ${Date.now()}`
+      );
     }
 
     return isExpired;

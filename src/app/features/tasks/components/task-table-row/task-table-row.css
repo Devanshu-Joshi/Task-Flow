@@ -6,7 +6,7 @@
     width: 100%;
     max-width: 220px;
     /* desktop cap */
-    overflow: hidden;
+    /* overflow: scroll; */
 }
 
 
@@ -16,6 +16,7 @@
     align-items: center;
     gap: 6px;
     width: 100%;
+    overflow: scroll;
 }
 
 /* Expanded → scroll only inner layer */
