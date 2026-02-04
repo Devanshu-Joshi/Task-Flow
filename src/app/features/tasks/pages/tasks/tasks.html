@@ -35,7 +35,7 @@
                 (sortByChange)="sortBy($event)" [clearExpandedTrigger]="clearExpandedTrigger()" [users]="users()">
             </app-task-table>
             } @else {
-            <kanban-view></kanban-view>
+            <kanban-view [tasks]="tasks()"></kanban-view>
             }
         </div>
 
