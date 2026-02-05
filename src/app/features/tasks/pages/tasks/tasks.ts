@@ -20,8 +20,8 @@ import { UserModel } from '@core/models/UserModel';
 import { StatsCard } from '@features/tasks/components/stats-card/stats-card';
 import { TaskFilters } from '@features/tasks/components/task-filters/task-filters';
 import { TaskTable } from '@features/tasks/components/task-table/task-table';
-import { TaskDialog } from '@features/tasks/components/task-dialog/task-dialog';
-import { TaskForm } from '@features/tasks/components/task-form/task-form';
+import { TaskDialog } from '@shared/components/task-dialog/task-dialog';
+import { TaskForm } from '@shared/components/task-form/task-form';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 import { KanbanView } from '@shared/components/kanban-view/kanban-view';
 
