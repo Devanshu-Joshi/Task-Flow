@@ -33,21 +33,19 @@
             }
 
             <!-- DUE DATE -->
-            <div class="relative flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
-            focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
+            <div class="border border-gray-300 rounded-xl px-3 py-3 my-4
+            focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
 
-                <!-- Calendar Icon -->
-                <i class="bx bx-calendar text-gray-400 text-lg"></i>
+                <!-- Label Row -->
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="bx bx-calendar text-gray-400"></i>
+                    <span class="text-sm text-gray-600">Due Date</span>
+                </div>
 
-                <!-- Date Input -->
-                <input #dateInput type="date" formControlName="dueDate"
-                    class="w-full bg-transparent outline-none text-sm appearance-none" />
-
-                @if (!form.get('dueDate')?.value) {
-                <span class="absolute left-10 text-gray-400 text-sm pointer-events-none">
-                    Due Date
-                </span>
-                }
+                <!-- Input -->
+                <input type="date" formControlName="dueDate" class="w-full border border-gray-300 rounded-lg px-3 py-2
+               bg-white outline-none text-sm
+               focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition" />
 
             </div>
 
