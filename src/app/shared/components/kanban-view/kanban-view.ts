@@ -16,10 +16,10 @@ import { Task, TaskStatus, TaskView } from '@core/models/Task';
   styleUrl: './kanban-view.css',
 })
 export class KanbanView {
-  deleteTask(_t28: TaskView) {
+  deleteTask() {
     throw new Error('Method not implemented.');
   }
-  editTask(_t28: TaskView) {
+  editTask() {
     throw new Error('Method not implemented.');
   }
   // Input: The master list of tasks as a Signal

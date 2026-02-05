@@ -5,10 +5,9 @@
     <!-- BOARD -->
     <div class="flex flex-row gap-6 flex-1 overflow-x-auto" cdkDropListGroup>
 
-        <!-- COLUMN -->
+        <!-- INCOMPLETE -->
         <div
             class="flex flex-col flex-1 min-w-70 h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-red-700">Incomplete</h3>
                 <span class="bg-red-200 text-red-700 text-xs px-2 py-1 rounded-full">
@@ -22,36 +21,22 @@
                 @for (item of incompleteList; track item.id) {
                 <div cdkDrag
                     class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500 hover:shadow-md transition-shadow group">
-                    <p class="text-gray-800 font-medium wrap-break-word pr-14">
+                    <p class="text-gray-800 font-medium break-words pr-14">
                         {{ item.title }}
                     </p>
 
-                    <!-- ACTION BUTTONS -->
-                    <div
-                        class="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="absolute bottom-2 right-2 flex gap-2
+                        opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
 
-                        <!-- EDIT -->
-                        <button (click)="editTask(item)"
-                            class="p-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm">
-                            <!-- Pencil Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15.232 5.232l3.536 3.536M9 13l6-6 3 3-6 6H9v-3z" />
-                            </svg>
+                        <button (click)="editTask()"
+                            class="p-2 md:p-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm">
+                            <i class='bx bx-edit text-base'></i>
                         </button>
 
-                        <!-- DELETE -->
-                        <button (click)="deleteTask(item)"
-                            class="p-1.5 rounded-md bg-red-50 hover:bg-red-100 text-red-600 shadow-sm">
-                            <!-- Trash Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-1 14H6L5 7m5 4v6m4-6v6M9 7h6m-7 0V5a1 1 0 011-1h4a1 1 0 011 1v2" />
-                            </svg>
+                        <button (click)="deleteTask()"
+                            class="p-2 md:p-1.5 rounded-md bg-red-50 hover:bg-red-100 text-red-600 shadow-sm">
+                            <i class='bx bx-trash text-base'></i>
                         </button>
-
                     </div>
                 </div>
                 }
@@ -67,7 +52,6 @@
         <!-- IN PROGRESS -->
         <div
             class="flex flex-col flex-1 min-w-70 h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-yellow-600">In Progress</h3>
                 <span class="bg-yellow-100 text-yellow-600 text-xs px-2 py-1 rounded-full">
@@ -81,36 +65,22 @@
                 @for (item of inProgressList; track item.id) {
                 <div cdkDrag
                     class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500 hover:shadow-md transition-shadow group">
-                    <p class="text-gray-800 font-medium wrap-break-word pr-14">
+                    <p class="text-gray-800 font-medium break-words pr-14">
                         {{ item.title }}
                     </p>
 
-                    <!-- ACTION BUTTONS -->
-                    <div
-                        class="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="absolute bottom-2 right-2 flex gap-2
+                        opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
 
-                        <!-- EDIT -->
-                        <button (click)="editTask(item)"
-                            class="p-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm">
-                            <!-- Pencil Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15.232 5.232l3.536 3.536M9 13l6-6 3 3-6 6H9v-3z" />
-                            </svg>
+                        <button (click)="editTask()"
+                            class="p-2 md:p-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm">
+                            <i class='bx bx-edit text-base'></i>
                         </button>
 
-                        <!-- DELETE -->
-                        <button (click)="deleteTask(item)"
-                            class="p-1.5 rounded-md bg-red-50 hover:bg-red-100 text-red-600 shadow-sm">
-                            <!-- Trash Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-1 14H6L5 7m5 4v6m4-6v6M9 7h6m-7 0V5a1 1 0 011-1h4a1 1 0 011 1v2" />
-                            </svg>
+                        <button (click)="deleteTask()"
+                            class="p-2 md:p-1.5 rounded-md bg-red-50 hover:bg-red-100 text-red-600 shadow-sm">
+                            <i class='bx bx-trash text-base'></i>
                         </button>
-
                     </div>
                 </div>
                 }
@@ -119,28 +89,17 @@
                 <div class="absolute inset-0 flex flex-col items-center justify-center text-center
            pointer-events-none rounded-xl border-2 border-dashed
            border-blue-200 bg-blue-50/40 px-4">
-                    <p class="font-semibold text-gray-700 mb-1">
-                        No In Progress Tasks
-                    </p>
-
-                    <p class="text-xs text-gray-500 mb-3">
-                        Tasks will appear here when they <br />
-                        move into this stage.
-                    </p>
-
-                    <span class="text-sm text-blue-600 font-medium">
-                        Drag a task here
-                    </span>
+                    <p class="font-semibold text-gray-700 mb-1">No In Progress Tasks</p>
+                    <p class="text-xs text-gray-500 mb-3">Tasks will appear here when they move into this stage.</p>
+                    <span class="text-sm text-blue-600 font-medium">Drag a task here</span>
                 </div>
                 }
-
             </div>
         </div>
 
         <!-- COMPLETED -->
         <div
             class="flex flex-col flex-1 min-w-70 h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-green-600">Completed</h3>
                 <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">
@@ -154,36 +113,22 @@
                 @for (item of completedList; track item.id) {
                 <div cdkDrag
                     class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 hover:shadow-md transition-shadow group">
-                    <p class="text-gray-800 font-medium wrap-break-word pr-14">
+                    <p class="text-gray-800 font-medium break-words pr-14">
                         {{ item.title }}
                     </p>
 
-                    <!-- ACTION BUTTONS -->
-                    <div
-                        class="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="absolute bottom-2 right-2 flex gap-2
+                        opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
 
-                        <!-- EDIT -->
-                        <button (click)="editTask(item)"
-                            class="p-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm">
-                            <!-- Pencil Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15.232 5.232l3.536 3.536M9 13l6-6 3 3-6 6H9v-3z" />
-                            </svg>
+                        <button (click)="editTask(); $event.stopPropagation()"
+                            class="p-2 md:p-1.5 rounded-md bg-blue-50 hover:bg-blue-100 text-blue-600 shadow-sm">
+                            <i class="bx bx-edit text-base"></i>
                         </button>
 
-                        <!-- DELETE -->
-                        <button (click)="deleteTask(item)"
-                            class="p-1.5 rounded-md bg-red-50 hover:bg-red-100 text-red-600 shadow-sm">
-                            <!-- Trash Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-1 14H6L5 7m5 4v6m4-6v6M9 7h6m-7 0V5a1 1 0 011-1h4a1 1 0 011 1v2" />
-                            </svg>
+                        <button (click)="deleteTask(); $event.stopPropagation()"
+                            class="p-2 md:p-1.5 rounded-md bg-red-50 hover:bg-red-100 text-red-600 shadow-sm">
+                            <i class="bx bx-trash text-base"></i>
                         </button>
-
                     </div>
                 </div>
                 }
