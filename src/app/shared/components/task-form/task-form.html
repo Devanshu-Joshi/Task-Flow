@@ -47,7 +47,7 @@
                     <span class="text-sm text-gray-600">Assign Users</span>
                 </div>
 
-                <ng-select formControlName="assignedTo" [items]="users$ | async" bindLabel="name" bindValue="id"
+                <ng-select formControlName="assignedTo" [items]="users()" bindLabel="name" bindValue="id"
                     [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom"
                     class="filter-select" [dropdownPosition]="'bottom'">
                 </ng-select>

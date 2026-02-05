@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
+import { Component, EventEmitter, input, Input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { UserService } from '@core/services/user/user.service';
@@ -20,7 +20,8 @@ export class TaskForm {
   @Input() dialogTitleColor: 'text-primary' | 'text-warn' | 'text-danger' = 'text-primary';
   @Input() dialogSubmitText: string = 'Save';
   @Input() isDeleting: boolean = false;
-  @Input() users$!: Observable<UserModel[] | null>;
+  // @Input() users$!: Observable<UserModel[] | null>;
+  users = input.required<UserModel[]>();
 
   @Output() submitForm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();

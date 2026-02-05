@@ -35,14 +35,14 @@
                 (sortByChange)="sortBy($event)" [clearExpandedTrigger]="clearExpandedTrigger()" [users]="users()">
             </app-task-table>
             } @else {
-            <kanban-view [tasks]="tasks()" (onTaskUpdate)="updateTasksFromDrag($event)"></kanban-view>
+            <kanban-view [users]="users()" [tasks]="tasks()" (onTaskUpdate)="updateTasksFromDrag($event)"></kanban-view>
             }
         </div>
 
         <app-task-dialog [open]="isDialogClosed == false" (close)="toggleDialog()">
             <app-task-form [form]="taskForm" [dialogTitle]="dialogTitle()" [dialogDescription]="dialogDescription()"
                 [dialogTitleColor]="dialogTitleColor()" [dialogSubmitText]="dialogSubmitText()"
-                [isDeleting]="isDeleting()" [users$]="users$" (submitForm)="submit()" (cancel)="cancelDialog()">
+                [isDeleting]="isDeleting()" [users]="users()" (submitForm)="submit()" (cancel)="cancelDialog()">
             </app-task-form>
         </app-task-dialog>
 
