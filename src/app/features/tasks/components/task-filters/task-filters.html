@@ -11,10 +11,10 @@
         </div>
 
         <!-- Users Select (1 col) -->
-        <div class="min-w-40 sm:col-span-1">
-            <ng-select class="user-select filter-select w-full" [items]="assignedUserOptions()" [clearable]="false"
-                bindLabel="name" bindValue="id" [(ngModel)]="selectedAssignedUser" [searchable]="false"
-                [closeOnSelect]="true" [clearable]="true">
+        <div class="min-w-35 sm:col-span-1">
+            <ng-select class="user-select w-full" [items]="assignedUserOptions()" [clearable]="false" bindLabel="name"
+                bindValue="id" [(ngModel)]="selectedAssignedUser" [searchable]="false" [closeOnSelect]="true"
+                [clearable]="true">
                 <ng-template ng-placeholder-tmp #placeholder>
                     <span class="text-gray-400 font-semibold whitespace-nowrap">Users</span>
                 </ng-template>
@@ -22,7 +22,7 @@
         </div>
 
         <div class="sm:col-span-2 flex gap-3">
-            <div class="w-full lg:w-60 min-w-45">
+            <div class="min-w-60 flex-[1_0_15rem]">
                 <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
                     [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
                     [linkedCalendars]="true" placeholder="Date range"
@@ -33,7 +33,7 @@
             </div>
 
             <!-- Status Select (1 col) -->
-            <div class="relative flex-[0_1_10rem] min-w-20">
+            <div class="relative flex-[0_1_10rem] min-w-25">
                 <ng-select class="status-select filter-select w-full" [items]="statusOptions()" bindLabel="label"
                     bindValue="value" [(ngModel)]="selectedStatus" [clearable]="false" [searchable]="false"
                     [closeOnSelect]="true">

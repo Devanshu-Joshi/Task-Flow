@@ -98,7 +98,8 @@
     border: 2px solid #d1d5db;
     border-radius: 0.5rem;
     min-height: 44px;
-    padding: 0 12px;
+    padding: 0;
+    padding-left: 10px;
     display: flex;
     align-items: center;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -148,6 +149,70 @@
 }
 
 .filter-select ::ng-deep .ng-select-container .ng-clear-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: none !important;
+}
+
+/* Main box */
+.user-select ::ng-deep .ng-select-container {
+    background: #ffffff;
+    border: 2px solid #d1d5db;
+    border-radius: 0.5rem;
+    min-height: 44px;
+    padding: 0;
+    padding-left: 10px;
+    padding-right: 8px;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.user-select ::ng-deep .ng-select-container:hover {
+    border-color: #9ca3af;
+}
+
+/* Selected value text */
+.user-select ::ng-deep .ng-value {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Arrow alignment fix */
+.user-select ::ng-deep .ng-arrow-wrapper {
+    display: none;
+}
+
+/* Dropdown panel */
+.user-select ::ng-deep .ng-dropdown-panel {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    margin-top: 4px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Dropdown options */
+.user-select ::ng-deep .ng-option {
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+/* Hover state */
+.user-select ::ng-deep .ng-option:hover {
+    background: #eef2ff;
+}
+
+/* Selected option */
+.user-select ::ng-deep .ng-option-selected {
+    font-weight: 600;
+    background: #eef2ff;
+}
+
+.user-select ::ng-deep .ng-select-container .ng-clear-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
