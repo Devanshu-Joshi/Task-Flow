@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragMove } from '@angular/cdk/drag-drop';
-import { Component, input, effect, output, inject, signal, ViewChildren, QueryList } from '@angular/core';
+import { Component, input, effect, output, inject, signal, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   CdkDragDrop,
@@ -43,6 +43,9 @@ export class KanbanView {
   dialogTitleColor = signal<'text-primary' | 'text-warn' | 'text-danger'>('text-primary');
   dialogSubmitText = signal('Save');
   @ViewChildren(CdkScrollable) scrollContainers!: QueryList<CdkScrollable>;
+  @ViewChildren('col') columns!: QueryList<ElementRef>;
+  @ViewChildren('list') lists!: QueryList<ElementRef>;
+  private resizeObserver!: ResizeObserver;
 
   // Local mutable arrays for CDK to manipulate
   incompleteList: TaskView[] = [];
@@ -62,7 +65,6 @@ export class KanbanView {
     effect(() => {
       const currentTasks = this.tasks();
 
-      // Reset arrays
       this.incompleteList = currentTasks.filter(t => t.status === 'INCOMPLETE');
       this.inProgressList = currentTasks.filter(t => t.status === 'IN_PROGRESS');
       this.completedList = currentTasks.filter(t => t.status === 'COMPLETED');
@@ -191,4 +193,93 @@ export class KanbanView {
     });
   }
 
+  private maxHeightPx = window.innerHeight * 0.85;
+
+  ngAfterViewInit() {
+    this.initResizeObserver();
+
+    // 🔥 Re-observe when Angular recreates list DOM (happens after drag)
+    this.lists.changes.subscribe(() => {
+      this.initResizeObserver();
+      this.scheduleSync();
+    });
+
+    window.addEventListener('resize', () => {
+      this.maxHeightPx = window.innerHeight * 0.85;
+      this.scheduleSync();
+    });
+
+    // initial sync
+    this.scheduleSync();
+  }
+
+  private initResizeObserver() {
+    // clear old observers
+    this.resizeObserver?.disconnect();
+
+    this.resizeObserver = new ResizeObserver(() => {
+      this.scheduleSync();
+    });
+
+    this.lists.forEach(list => {
+      this.resizeObserver.observe(list.nativeElement);
+    });
+  }
+
+  private syncScheduled = false;
+
+  private scheduleSync() {
+    if (this.syncScheduled) return;
+    this.syncScheduled = true;
+
+    requestAnimationFrame(() => {
+      this.syncHeights();
+      this.syncScheduled = false;
+    });
+  }
+
+  ngOnDestroy() {
+    this.resizeObserver?.disconnect();
+  }
+
+  private syncHeights() {
+    if (!this.columns?.length) return;
+
+    // reset heights to measure natural size
+    this.columns.forEach(col => col.nativeElement.style.height = 'auto');
+
+    const heights = this.columns.map(c =>
+      c.nativeElement.getBoundingClientRect().height
+    );
+    const tallestNatural = Math.max(...heights);
+
+    const targetHeight = Math.min(tallestNatural, this.maxHeightPx);
+
+    this.columns.forEach((col, i) => {
+      const current = col.nativeElement.style.height;
+      const next = `${targetHeight}px`;
+      if (current !== next) {
+        col.nativeElement.style.height = next;
+      }
+
+      const list = this.lists.get(i);
+      if (list) {
+        const headerHeight =
+          col.nativeElement.firstElementChild?.offsetHeight || 0;
+
+        list.nativeElement.style.maxHeight =
+          `${targetHeight - headerHeight}px`;
+        list.nativeElement.style.overflowY = 'auto';
+      }
+    });
+  }
+
+  onDragEnded() {
+    // Wait until CDK puts element into final list position
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.scheduleSync();
+      });
+    });
+  }
 }
