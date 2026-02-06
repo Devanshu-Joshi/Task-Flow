@@ -52,22 +52,6 @@
                         {{ item.label }} </span> </ng-template> </ng-select>
         </div>
 
-        <!-- Tasks per page -->
-        <div class="relative w-full md:flex-1 lg:w-45 lg:min-w-45 lg:max-w-75">
-            <ng-select class="tasks-per-page-select filter-select w-full" [items]="pageSizeOptions()"
-                [clearable]="false" [searchable]="false" [ngModel]="selectedPageSize()"
-                (ngModelChange)="onPageSizeChange($event)" [closeOnSelect]="true">
-                <ng-template ng-label-tmp let-item="item">
-                    <span class="text-sm sm:text-base whitespace-nowrap">
-                        Tasks per page : <strong>{{ item }}</strong>
-                    </span>
-                </ng-template>
-                <ng-template ng-option-tmp let-item="item">
-                    {{ item }}
-                </ng-template>
-            </ng-select>
-        </div>
-
         <div class="w-full flex gap-3 md:contents">
 
             <!-- Add Task -->

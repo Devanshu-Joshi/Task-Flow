@@ -94,7 +94,9 @@
 
     <!-- ============================== FOOTER ============================== -->
     <app-task-table-footer [total]="tasks.length" [itemsPerPage]="itemsPerPage" [currentPage]="currentPage"
-        [totalPages]="totalPages" (clearFilters)="onClearFilters()" (pageChange)="onPageChange($event)">
+        [totalPages]="totalPages" (clearFilters)="onClearFilters()" (pageChange)="onPageChange($event)"
+        [pageSizeOptions]="pageSizeOptions()" [(selectedPageSize)]="selectedPageSize"
+        (pageSizeChangeTrigger)="pageSizeChangeTrigger.emit($event)">
     </app-task-table-footer>
 
 </div>

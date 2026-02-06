@@ -22,17 +22,17 @@
 
         <div class="w-full bg-white rounded-lg px-4 sm:px-6 lg:px-10 pb-8 sm:pb-10 pt-6 sm:pt-7">
             <!-- Task Filters Component -->
-            <app-task-filters [statusOptions]="statusOptions" [pageSizeOptions]="pageSizeOptions"
-                [searchControl]="searchControl" [(dateRange)]="dateRange" [(selectedStatus)]="selectedStatus"
-                [(selectedPageSize)]="selectedPageSize" (pageSizeChangeTrigger)="setItemsPerPage($event)"
-                (addTask)="toggleDialog()" [assignedUserOptions]="users()"
+            <app-task-filters [statusOptions]="statusOptions" [searchControl]="searchControl" [(dateRange)]="dateRange"
+                [(selectedStatus)]="selectedStatus" (addTask)="toggleDialog()" [assignedUserOptions]="users()"
                 [(selectedAssignedUser)]="selectedAssignedUser" (UISwitchedTrigger)="isUISwitched.set($event)">
             </app-task-filters>
             @if(isUISwitched() == false) {
             <app-task-table [tasks]="filteredTasks()" [itemsPerPage]="itemsPerPage()" [currentPage]="p"
                 [sortField]="sortField()" [sortDirection]="sortDirection()" (editTask)="edit($event)"
                 (deleteTask)="delete($event)" (pageChange)="p = $event" (clearFilters)="clearFilters()"
-                (sortByChange)="sortBy($event)" [clearExpandedTrigger]="clearExpandedTrigger()" [users]="users()">
+                (sortByChange)="sortBy($event)" [clearExpandedTrigger]="clearExpandedTrigger()" [users]="users()"
+                [pageSizeOptions]="pageSizeOptions" [(selectedPageSize)]="selectedPageSize"
+                (pageSizeChangeTrigger)="setItemsPerPage($event)">
             </app-task-table>
             } @else {
             <kanban-view [users]="users()" [tasks]="tasks()" (onTaskUpdate)="updateTasksFromDrag($event)"></kanban-view>

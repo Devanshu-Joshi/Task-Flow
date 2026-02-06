@@ -10,7 +10,8 @@ import {
   computed,
   DestroyRef,
   inject,
-  input
+  input,
+  model
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -49,6 +50,8 @@ export class TaskTable implements OnChanges {
   @Input() sortField: 'title' | 'createdAt' = 'createdAt';
   @Input() sortDirection: 'asc' | 'desc' = 'desc';
   @Input() clearExpandedTrigger!: number;
+  pageSizeOptions = input.required<readonly (number | string)[]>();
+  selectedPageSize = model<number | 'All'>(5);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Outputs                                  */
@@ -60,6 +63,7 @@ export class TaskTable implements OnChanges {
   @Output() clearFilters = new EventEmitter<void>();
   @Output() sortByChange = new EventEmitter<'title' | 'createdAt'>();
   @Output() reorderTasks = new EventEmitter<TaskView[]>();
+  @Output() pageSizeChangeTrigger = new EventEmitter<number | 'All'>();
 
   /* -------------------------------------------------------------------------- */
   /*                                    State                                   */

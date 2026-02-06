@@ -26,6 +26,10 @@
 }
 
 /*** Tasks per page ***/
+:host ::ng-deep .ng-dropdown-panel-items {
+    border: 2px solid gray !important;
+}
+
 
 :host ::ng-deep .tasks-per-page-select.ng-select {
     width: 100%;
@@ -49,9 +53,9 @@
     cursor: pointer;
     transition: border-color 150ms ease-in-out;
 
-    height: 2.75rem;
+    height: 2rem;
     /* 44px (Tailwind h-11) */
-    min-height: 2.75rem;
+    min-height: 2rem;
 }
 
 :host ::ng-deep .tasks-per-page-select .ng-select-container:hover {
@@ -70,9 +74,32 @@
     display: none;
 }
 
-/* Chevron icon */
-:host ::ng-deep .tasks-per-page-select .ng-arrow {
-    border: none;
+/* Arrow */
+
+:host ::ng-deep .ng-select .ng-arrow-wrapper {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+:host ::ng-deep .ng-select .ng-arrow {
+    display: none;
+    /* hide default arrow */
+}
+
+:host ::ng-deep .ng-select .ng-arrow-wrapper::after {
+    content: "▴";
+    /* your custom arrow */
+    font-size: 20px;
+    color: #666;
+    transition: transform 0.2s ease;
+}
+
+:host ::ng-deep .ng-select.ng-select-opened .ng-arrow-wrapper::after {
+    transform: rotate(180deg);
+    /* flip when open */
 }
 
 /* Prevent wrapping */
