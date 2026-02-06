@@ -21,7 +21,7 @@
             </ng-select>
         </div>
 
-        <div class="sm:col-span-2 flex gap-3">
+        <div class="sm:col-span-2 grid grid-cols-1 sm:flex gap-3">
             <div class="min-w-60 flex-[1_0_15rem]">
                 <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
                     [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
@@ -79,8 +79,8 @@
   shadow-md shadow-purple-500/30
   hover:shadow-lg hover:shadow-purple-500/40
   lg:hover:scale-105 transition-all duration-200
-  whitespace-nowrap min-w-20 flex items-center justify-center" (click)="canCreateTaskSig() && addTask.emit()"
-                [title]="'Add Task'">
+  whitespace-nowrap min-w-20 flex items-center justify-center cursor-pointer"
+                (click)="canCreateTaskSig() && addTask.emit()" [title]="'Add Task'">
 
                 <span>Add Task</span>
 
