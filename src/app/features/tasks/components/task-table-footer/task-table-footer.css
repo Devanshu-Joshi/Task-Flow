@@ -24,3 +24,78 @@
         font-weight: 900;
     }
 }
+
+/*** Tasks per page ***/
+
+:host ::ng-deep .tasks-per-page-select.ng-select {
+    width: 100%;
+    min-width: 0;
+}
+
+:host ::ng-deep .tasks-per-page-select .ng-select-container {
+    display: flex;
+    align-items: center;
+    /* gap-2 */
+
+    border-width: 2px;
+    border-style: solid;
+    border-color: #d1d5db;
+    /* gray-300 */
+
+    /* same as status */
+    border-radius: 0.5rem;
+    /* rounded-lg */
+
+    cursor: pointer;
+    transition: border-color 150ms ease-in-out;
+
+    height: 2.75rem;
+    /* 44px (Tailwind h-11) */
+    min-height: 2.75rem;
+}
+
+:host ::ng-deep .tasks-per-page-select .ng-select-container:hover {
+    border-color: #6366f1;
+    /* indigo-500 */
+}
+
+/* Remove default input spacing */
+:host ::ng-deep .tasks-per-page-select .ng-value-container {
+    padding: 0;
+    align-items: center;
+}
+
+/* Hide search caret spacing */
+:host ::ng-deep .tasks-per-page-select .ng-input {
+    display: none;
+}
+
+/* Chevron icon */
+:host ::ng-deep .tasks-per-page-select .ng-arrow {
+    border: none;
+}
+
+/* Prevent wrapping */
+:host ::ng-deep .tasks-per-page-select .ng-value,
+:host ::ng-deep .tasks-per-page-select .ng-option,
+:host ::ng-deep .tasks-per-page-select .ng-placeholder {
+    /* white-space: nowrap; */
+}
+
+:host ::ng-deep .tasks-per-page-select .ng-has-value {
+    padding: 0 10px;
+    gap: 0;
+}
+
+/* :host ::ng-deep .tasks-per-page-select .ng-has-value .ng-value-container {
+    display: flex;
+    justify-content: center;
+} */
+
+:host ::ng-deep .tasks-per-page-select.ng-select-opened .ng-select-container {
+    z-index: 1;
+}
+
+:host ::ng-deep .tasks-per-page-select.ng-select-opened .ng-select-bottom {
+    z-index: 45;
+}

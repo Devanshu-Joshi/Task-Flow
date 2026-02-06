@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-task-table-footer',
-  imports: [CommonModule],
+  imports: [CommonModule, NgSelectComponent],
   templateUrl: './task-table-footer.html',
   styleUrl: './task-table-footer.css',
 })
